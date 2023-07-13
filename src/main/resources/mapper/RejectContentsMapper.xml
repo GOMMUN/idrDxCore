@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.RejectContentsMapper">
+    
+    <select id="countByTid" parameterType="String" resultType="Integer">
+        SELECT COUNT(TID)
+		 FROM DSP_REJECT_CONTENTS
+		WHERE ISUSABLE IS NOT NULL
+		AND TID = #{tid}
+    </select>
+    
+    <insert id="create" parameterType="RejectContentsDTO">
+        INSERT INTO DSP_REJECT_CONTENTS (
+        	OPERATIONID, 
+        	REJECT_ITEMID, 
+        	MODELID, 
+        	FIRSTTIME_REJECT_QTY, 
+        	REWORK_REJECT_QTY, 
+        	TID, 
+        	WORKDAILY_SEQ
+        ) VALUES(
+        	#{operationid}
+        	, #{rejectItemid}
+        	, #{modelid}
+            , #{firsttimeRejectQty}
+            , #{reworkRejectQty}
+            , #{tid}
+            , #{workdailySeq}
+        )
+    </insert>
+    
+</mapper>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.WorkContentsMapper">
+    
+    <select id="countByTid" parameterType="String" resultType="Integer">
+        SELECT COUNT(TID)
+		 FROM DSP_WORK_CONTENTS
+		WHERE ISUSABLE IS NOT NULL
+		AND TID = #{tid}
+    </select>
+    
+    <insert id="create" parameterType="WorkContentsDTO">
+        INSERT INTO DSP_WORK_CONTENTS (
+        	WORKTIME_FROM, 
+        	WORKTIME_TO, 
+        	MODELID, 
+        	OPERATIONID, 
+        	MANHOUR, 
+        	PROD_QTY, 
+        	FIRSTTIME_GOOD_QTY, 
+        	FIRSTTIME_FAIL_QTY, 
+        	REWORK_GOOD_QTY, 
+        	REWORK_FAIL_QTY, 
+        	TID, 
+        	WORKDAILY_SEQ
+        ) VALUES(
+        	#{worktimeFrom}
+        	, #{worktimeTo}
+        	, #{modelid}
+            , #{operationid}
+            , #{manhour}
+        	, #{prodQty}
+            , #{firsttimeGoodQty}
+            , #{firsttimeFailQty}
+            , #{reworkGoodQty}
+        	, #{reworkFailQty}
+            , #{tid}
+            , #{workdailySeq}
+        )
+    </insert>
+    
+</mapper>

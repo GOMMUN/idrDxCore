@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.WorkerInputMapper">
+    
+    <select id="countByTid" parameterType="String" resultType="Integer">
+        SELECT COUNT(TID)
+		 FROM DSP_WORKER_INPUT
+		WHERE ISUSABLE IS NOT NULL
+		AND TID = #{tid}
+    </select>
+    
+    <insert id="create" parameterType="WorkerInputDTO" >
+        INSERT INTO DSP_WORKER_INPUT (
+        	PERSONID, 
+        	OVERTIME, 
+        	TID, 
+        	WORKDAILY_SEQ
+        ) VALUES(
+        	#{personid}
+        	, #{overtime}
+            , #{tid}
+            , #{workdailySeq}
+        )
+    </insert>
+    
+</mapper>

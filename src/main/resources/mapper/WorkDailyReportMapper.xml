@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.WorkDailyReportMapper">
+    
+    <select id="findByTid" parameterType="String" resultType="HashMap">
+        SELECT *
+		 FROM DSP_WORKDAILY_REPORT
+		WHERE ISUSABLE IS NOT NULL
+		AND TID = #{tid}
+    </select>
+    
+    <select id="find" parameterType="WorkDailyReportDTO" resultType="WorkDailyReportDTO">
+        SELECT 
+        	DATASEQ, 
+        	FACTORYID, 
+        	WORK_DATE, 
+        	LINEID, 
+        	SHIFTID, 
+        	REGISTER, 
+        	PLAN_QTY,
+        	NOTES, 
+        	CREATOR, 
+        	CREATETIME, 
+        	EVENT, 
+        	EVENTUSER, 
+        	EVENTTIME, 
+        	ISUSABLE, 
+        	TID
+		 FROM DSP_WORKDAILY_REPORT
+		WHERE ISUSABLE IS NOT NULL
+		AND WORK_DATE = #{workDate}
+		AND FACTORYID = #{factoryid}
+		AND LINEID = #{lineid}
+		AND SHIFTID = #{shiftid}
+    </select>
+    
+    <select id="countByTid" parameterType="String" resultType="Integer">
+        SELECT COUNT(TID)
+		 FROM DSP_WORKDAILY_REPORT
+		WHERE ISUSABLE IS NOT NULL
+		AND TID = #{tid}
+    </select>
+    
+    <select id="count" parameterType="WorkDailyReportDTO" resultType="Integer">
+        SELECT COUNT(*)
+		 FROM DSP_WORKDAILY_REPORT
+		WHERE ISUSABLE IS NOT NULL
+		AND WORK_DATE = #{workDate}
+		AND FACTORYID = #{factoryid}
+		AND LINEID = #{lineid}
+		AND SHIFTID = #{shiftid}
+    </select>
+    
+    <insert id="create" parameterType="WorkDailyReportDTO" >
+        INSERT INTO DSP_WORKDAILY_REPORT (
+             FACTORYID
+             , WORK_DATE
+             , LINEID
+             , SHIFTID
+             , REGISTER
+             , PLAN_QTY
+             , TID
+        )
+        VALUES (
+             #{factoryid}
+             , #{workDate}
+             , #{lineid}
+             , #{shiftid}
+             , #{register}
+             , #{planQty}
+             , #{tid}
+        )
+    </insert>
+    
+</mapper>
