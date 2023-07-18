@@ -3,11 +3,17 @@ package com.idr.pdd.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.idr.pdd.common.BlockKitDataParshing;
 import com.idr.pdd.mapper.AlarmSettingMapper;
 import com.idr.pdd.mapper.BlockKitMapper;
+import com.idr.pdd.mapper.FactoryMapper;
 
 @Service
 public class AlarmService {
+	
+	private static final String OCCUR = "OCCUR";		// 발생
+	private static final String NOTICE = "NOTICE";		// 통보
+	private static final String CONFIRM = "CONFIRM";	// 확인
 	
 	private static final String UNDER_PRODUCTION = "UNDER-PRODUCTION";				// 계획대비 생산량 부족 (납기지연)
 	private static final String NOTOPERATE_PRESS = "NOTOPERATE-PRESS";				// 프레스 설비 작동 이상 (설비이상)
@@ -18,8 +24,11 @@ public class AlarmService {
 	
 	@Autowired
 	BlockKitMapper blockKitMapper;
+	
+	@Autowired
+	FactoryMapper factoryMapper;
 
-	public void underProduction(String plant, int planQty, int prodQty) throws Exception{
+	public void underProduction(String plant, int planQty, int prodQty, String tid) throws Exception{
 		
 		// 백분율
 		int percent = (int)((double) prodQty / (double) planQty * 100);
@@ -30,16 +39,18 @@ public class AlarmService {
 		// 설정값보다 백분율이 작을경우 알람 발생
 		if(value > percent) {
 			
+			String plantName = factoryMapper.findName(plant);
+			
+			// blockkit message
+			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
+			
+			String result = BlockKitDataParshing.underProduction(OCCUR, blockKit, plantName, planQty, prodQty);
+			
 			if("KEM".equals(plant)) {
 				// 통보 > 확인 ( 대표기업 )
 			}else {
 				// 발생 > 통보 > 확인 ( 협럽사 )
 			}
-			
-			
-			
-			// blockkit message
-			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
 		}
 	}
 	
