@@ -14,6 +14,7 @@ import com.idr.pdd.vo.WorkDailyReport;
 import com.idr.pdd.vo.WorkerInput;
 import com.idr.pdd.vo.WorkerManhour;
 import com.idr.pdd.vo.WorkerSupport;
+import com.idr.pdd.dto.AnomalydetectConfirmDTO;
 import com.idr.pdd.dto.WorkDailyReportDTO;
 import com.idr.pdd.dto.WorkerInputDTO;
 import com.idr.pdd.mapper.WorkDailyReportMapper;
@@ -100,6 +101,7 @@ public class WorkDailyReportService{
 		
 		return mapper.find(result);
 	}
+
 	
 	public int countByTid(String tid) throws Exception {
 		return mapper.countByTid(tid);
@@ -149,4 +151,6 @@ public class WorkDailyReportService{
 		}
 		return result;
 	}
+	
+
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.AnomalydetectOccurMapper">
+    
+    <select id="countByTid" parameterType="String" resultType="Integer">
+        SELECT COUNT(TID)
+		 FROM DSP_ANOMALYDETECT_OCCUR
+		WHERE ISUSABLE IS NOT NULL
+		AND TID = #{tid}
+    </select>
+    
+    <insert id="create" parameterType="AnomalydetectOccurDTO">
+        INSERT INTO DSP_ANOMALYDETECT_OCCUR (
+        	FACTORYID,
+        	OCCURID, 
+        	OCCUR_DATETIME, 
+        	OCCUR_UPDATOR, 
+        	OCCUR_TARGET, 
+        	OCCUR_REASON, 
+        	OCCUR_REASONDESCRIPTION, 
+        	TID
+        ) VALUES(
+        	#{factoryid}
+        	, #{occurid}
+        	, GETDATE()
+        	, #{occurUpdator}
+            , #{occurTarget}
+            , #{occurReason}
+            , #{occurReasondescRiption}
+            , #{tid}
+        )
+    </insert>
+    
+</mapper>
