@@ -21,6 +21,7 @@ import com.idr.pdd.common.Message;
 import com.idr.pdd.common.StatusEnum;
 import com.idr.pdd.common.CheckUtils;
 import com.idr.pdd.dto.WorkDailyReportDTO;
+import com.idr.pdd.service.AlarmService;
 import com.idr.pdd.service.WorkContentsService;
 import com.idr.pdd.service.WorkDailyReportService;
 import com.idr.pdd.service.WorkerInputService;
@@ -51,6 +52,9 @@ public class WorkContentsController {
 	
 	@Autowired
 	private WorkContentsService service;
+	
+	@Autowired
+	private AlarmService alarmService;
 
 	@ResponseBody
 	@PostMapping("/")
@@ -84,6 +88,10 @@ public class WorkContentsController {
 			}
 			
 			int result = service.create(param, dataseq);
+			
+			// 팀플리 메신저 연동 시작
+			alarmService.underProduction(parent.getFactoryid(), parent.getPlanQty(), param.getProdqty());
+			// 팀플리 메신저 연동 종료
 			
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 	        
