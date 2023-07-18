@@ -90,7 +90,7 @@ public class WorkContentsController {
 			int result = service.create(param, dataseq);
 			
 			// 팀플리 메신저 연동 시작
-			alarmService.underProduction(parent.getFactoryid(), parent.getPlanQty(), param.getProdqty());
+			alarmService.underProduction(parent.getFactoryid(), parent.getPlanQty(), param.getProdqty(), param.getTid());
 			// 팀플리 메신저 연동 종료
 			
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
