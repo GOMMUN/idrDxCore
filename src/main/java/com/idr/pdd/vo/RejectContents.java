@@ -18,14 +18,17 @@ public class RejectContents {
 	@Schema(name = "shift", description = "작업구분", example = "KEM-AM", required = true)
 	private String shift;
 	
+	@Schema(name = "model", description = "모델", example = "MODEL1")
+	private String model;
+	
+	@Schema(name = "material", description = "자재", example = "MOT000324/C")
+	private String material;
+	
 	@Schema(name = "operation", description = "", example = "리크&디포")
 	private String operation;
 	
 	@Schema(name = "rejectcode", description = "", example = "WARTER")
 	private String rejectcode;
-	
-	@Schema(name = "model", description = "", example = "M00008")
-	private String model;
 	
 	@Schema(name = "firstrejectqty", description = "", example = "13")
 	private int firstrejectqty;

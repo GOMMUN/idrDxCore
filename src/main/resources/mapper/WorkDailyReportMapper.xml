@@ -35,6 +35,8 @@
 		AND FACTORYID = #{factoryid}
 		AND LINEID = #{lineid}
 		AND SHIFTID = #{shiftid}
+		AND MODELID = #{modelid}
+		AND MATERIALID = #{materialid}
     </select>
     
     <select id="countByTid" parameterType="String" resultType="Integer">
@@ -52,6 +54,8 @@
 		AND FACTORYID = #{factoryid}
 		AND LINEID = #{lineid}
 		AND SHIFTID = #{shiftid}
+		AND MODELID = #{modelid}
+		AND MATERIALID = #{materialid}
     </select>
     
     <insert id="create" parameterType="WorkDailyReportDTO" >
@@ -60,6 +64,8 @@
              , WORK_DATE
              , LINEID
              , SHIFTID
+             , MODELID
+             , MATERIALID
              , REGISTER
              , PLAN_QTY
              , TID
@@ -69,6 +75,8 @@
              , #{workDate}
              , #{lineid}
              , #{shiftid}
+             , #{modelid}
+             , #{materialid}
              , #{register}
              , #{planQty}
              , #{tid}

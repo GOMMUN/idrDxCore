@@ -23,8 +23,6 @@ public class WorkContentsService{
 		WorkContentsDTO result = WorkContentsDTO.builder()
 										.worktimeFrom(param.getFromtime())
 										.worktimeTo(param.getTotime())
-										.modelid(param.getModel())
-										.operationid(param.getOperation())
 										.manhour(param.getManhour())
 										.prodQty(param.getProdqty())
 										.firsttimeGoodQty(param.getFirstgoodqty())

@@ -13,6 +13,8 @@ public class WorkDailyReportDTO {
 	private String workDate;
 	private String lineid;
 	private String shiftid;
+	private String modelid;
+	private String materialid;
 	private String register;
 	private int planQty;
 	private String notes;

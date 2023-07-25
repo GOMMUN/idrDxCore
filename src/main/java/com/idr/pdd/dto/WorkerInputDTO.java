@@ -9,10 +9,6 @@ public class WorkerInputDTO {
 	
 	private int dataseq;
 	private int workdailySeq;
-	private String factoryid;
-	private String lineid;
-	private String shiftid;
-	private String workDate;
 	private String personid;
 	private String overtime;
 	private String notes;

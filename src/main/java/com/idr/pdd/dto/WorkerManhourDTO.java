@@ -9,10 +9,6 @@ public class WorkerManhourDTO {
 
 	private int dataseq;
 	private int workdailySeq;
-	private String factoryid;
-	private String lineid;
-	private String shiftid;
-	private String workDate;
 	private String inputItemid;
 	private int hands;
 	private int manhour;

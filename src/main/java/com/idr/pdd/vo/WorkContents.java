@@ -17,15 +17,18 @@ public class WorkContents {
 	
 	@Schema(name = "shift", description = "작업구분", example = "KEM-AM", required = true)
 	private String shift;
+	
+	@Schema(name = "model", description = "모델", example = "MODEL1")
+	private String model;
+	
+	@Schema(name = "material", description = "자재", example = "MOT000324/C")
+	private String material;
 
 	@Schema(name = "fromtime", description = "시작시간", example = "080000", required = true)
 	private String fromtime;
 	
 	@Schema(name = "totime", description = "종료시간", example = "095500", required = true)
 	private String totime;
-	
-	@Schema(name = "model", description = "모델", example = "M00007")
-	private String model;
 	
 	@Schema(name = "operation", description = "공정", example = "201")
 	private String operation;

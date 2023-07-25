@@ -40,6 +40,18 @@ public class CheckUtils {
 			result = true;
 		}
 		
+		if(param.getModel().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getMaterial().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
 		if(param.getPlanqty() == 0) {
 			result = false;
 		}else {
@@ -77,6 +89,18 @@ public class CheckUtils {
 		}
 		
 		if(param.getShift().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getModel().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getMaterial().isEmpty()) {
 			result = false;
 		}else {
 			result = true;
@@ -124,6 +148,18 @@ public class CheckUtils {
 			result = true;
 		}
 		
+		if(param.getModel().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getMaterial().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
 		if(param.getSeparation().isEmpty()) {
 			result = false;
 		}else {
@@ -161,6 +197,18 @@ public class CheckUtils {
 		}
 		
 		if(param.getShift().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getModel().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getMaterial().isEmpty()) {
 			result = false;
 		}else {
 			result = true;
@@ -214,6 +262,18 @@ public class CheckUtils {
 			result = true;
 		}
 		
+		if(param.getModel().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getMaterial().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
 		if(param.getFromtime().isEmpty()) {
 			result = false;
 		}else {
@@ -262,6 +322,18 @@ public class CheckUtils {
 			result = true;
 		}
 		
+		if(param.getModel().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getMaterial().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
 		if(param.getFromtime().isEmpty()) {
 			result = false;
 		}else {
@@ -305,6 +377,18 @@ public class CheckUtils {
 		}
 		
 		if(param.getShift().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getModel().isEmpty()) {
+			result = false;
+		}else {
+			result = true;
+		}
+		
+		if(param.getMaterial().isEmpty()) {
 			result = false;
 		}else {
 			result = true;

@@ -9,9 +9,6 @@ public class WorkerSupportDTO {
 
 	private int dataseq;
 	private int workdailySeq;
-	private String factoryid;
-	private String lineid;
-	private String workDate;
 	private String personid;
 	private String supporttimeFrom;
 	private String supporttimeTo;

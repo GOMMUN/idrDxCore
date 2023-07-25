@@ -44,7 +44,7 @@ public class AlarmService {
 			// blockkit message
 			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
 			
-			String result = BlockKitDataParshing.underProduction(OCCUR, blockKit, plantName, planQty, prodQty);
+			String result = BlockKitDataParshing.underProduction(OCCUR, blockKit, plantName, planQty, prodQty, percent);
 			
 			if("KEM".equals(plant)) {
 				// 통보 > 확인 ( 대표기업 )
