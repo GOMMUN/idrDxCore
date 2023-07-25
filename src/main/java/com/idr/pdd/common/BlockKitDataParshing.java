@@ -55,7 +55,7 @@ public class BlockKitDataParshing {
 			blockKit = jsonObject.toString();
 			
 		}else if("NOTICE".equals(level)) {
-			// 발생
+			// 통보
 			//JSONParser parser = new JSONParser(blockKit);
 			
 			JsonObject jsonObject = (JsonObject)new JsonParser().parse(blockKit);
@@ -81,7 +81,7 @@ public class BlockKitDataParshing {
 			blockKit = jsonObject.toString();
 			
 		}else if("CONFIRM".equals(level)) {
-			// 발생
+			// 확인
 			//JSONParser parser = new JSONParser(blockKit);
 			
 			JsonObject jsonObject = (JsonObject)new JsonParser().parse(blockKit);

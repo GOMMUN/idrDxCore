@@ -3,6 +3,7 @@ package com.idr.pdd.common;
 import com.idr.pdd.dto.AnomalydetectConfirmDTO;
 import com.idr.pdd.dto.AnomalydetectNoticeDTO;
 import com.idr.pdd.dto.AnomalydetectOccurDTO;
+import com.idr.pdd.vo.Anomalydetect;
 import com.idr.pdd.vo.NotoperateContents;
 import com.idr.pdd.vo.RejectContents;
 import com.idr.pdd.vo.WorkContents;
@@ -415,139 +416,26 @@ public class CheckUtils {
 		return result;
 	}
 	
-	public static boolean isValidation(AnomalydetectOccurDTO param) {
+	public static boolean isValidation(Anomalydetect param) {
 		boolean result = false;
 		
-		if(param.getFactoryid().isEmpty()) {
+		if(param.getFactory().isEmpty()) {
 			result = false;
 		}else {
 			result = true;
 		}
 		
-		if(param.getOccurid().isEmpty()) {
+		if(param.getMessengerid().isEmpty()) {
 			result = false;
 		}else {
 			result = true;
 		}
 		
-		if(param.getOccurDatetime().isEmpty()) {
+		if(param.getMessengerState().isEmpty()) {
 			result = false;
 		}else {
 			result = true;
 		}
-		
-		if(param.getOccurUpdator().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getOccurTarget().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getOccurReason().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getOccurReasondescRiption().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getTid().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		if(param.getTid().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		return result;
-	}
-	
-	public static boolean isValidation(AnomalydetectNoticeDTO param) {
-		boolean result = false;
-		
-		if(param.getFactoryid().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getNoticeid().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getNoticeTarget().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getNoticeReason().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		if(param.getNoticeUpdator().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		if(param.getTid().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-
-		
-		return result;
-	}
-	
-	public static boolean isValidation(AnomalydetectConfirmDTO  param) {
-		boolean result = false;
-		
-		if(param.getFactoryid().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getConfirmid().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getConfirmUpdator().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		
-		if(param.getConfirmTarget().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-		if(param.getTid().isEmpty()) {
-			result = false;
-		}else {
-			result = true;
-		}
-
-
 		
 		return result;
 	}

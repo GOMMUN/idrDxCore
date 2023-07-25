@@ -30,9 +30,6 @@ public class WorkContents {
 	@Schema(name = "totime", description = "종료시간", example = "095500", required = true)
 	private String totime;
 	
-	@Schema(name = "operation", description = "공정", example = "201")
-	private String operation;
-	
 	@Schema(name = "manhour", description = "사용공수", example = "")
 	private int manhour;
 	

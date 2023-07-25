@@ -28,7 +28,10 @@ public class AlarmService {
 	@Autowired
 	FactoryMapper factoryMapper;
 
-	public void underProduction(String plant, int planQty, int prodQty, String tid) throws Exception{
+	public void underProduction(String plant, int planQty, String tid) throws Exception {
+		
+		// 생산량 총 합산
+		int prodQty = 0;
 		
 		// 백분율
 		int percent = (int)((double) prodQty / (double) planQty * 100);
