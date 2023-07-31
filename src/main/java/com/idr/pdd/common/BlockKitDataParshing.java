@@ -8,17 +8,30 @@ import com.google.gson.JsonParser;
 
 public class BlockKitDataParshing {
 	
-	private static String setUrl(String btnUrl, String plantName, String materialName, int planQty, int prodQty, int percent) {
+	public static String setUnderProductionOccurUrl(String plant, String material, int planQty, int prodQty, int percent) {
 		
 		String req = null;
-		
-		String url = "https://idrenvision.iptime.org:8071/message/underProduction"
-				+ "?plantName="+plantName
-				+ "&materialName="+materialName
+
+		String url = "http://idrenvision.iptime.org:8171/message/underProduction/confirm"
+				+ "?plant="+plant
+				+ "&material="+material
 				+ "&planQty="+planQty
 				+ "&prodQty="+prodQty
-				+ "&percent="+percent
-				+ "&btnUrl="+btnUrl;
+				+ "&percent="+percent;
+		
+		return url;
+	}
+	
+	public static String setUnderProductionNoticeUrl(String plant, String material, int planQty, int prodQty, int percent) {
+		
+		String req = null;
+
+		String url = "http://idrenvision.iptime.org:8171/message/underProduction/confirm"
+				+ "?plant="+plant
+				+ "&material="+material
+				+ "&planQty="+planQty
+				+ "&prodQty="+prodQty
+				+ "&percent="+percent;
 		
 		return url;
 	}

@@ -82,7 +82,7 @@ public class AlarmService {
 			// blockkit message
 			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
 			String btnString = "통보";
-			String btnUrl = "";			
+			String btnUrl = BlockKitDataParshing.setUnderProductionOccurUrl(parent.getFactoryid(), parent.getMaterialid(), planQty, prodQty, percent);			
 			
 			String message = BlockKitDataParshing.underProduction(blockKit, btnString, btnUrl, plantName, materialName, planQty, prodQty, percent);
 			
@@ -129,7 +129,7 @@ public class AlarmService {
 			// blockkit message
 			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
 			String btnString = "확인";
-			String btnUrl = "";			
+			String btnUrl = BlockKitDataParshing.setUnderProductionNoticeUrl(parent.getFactoryid(), parent.getMaterialid(), planQty, prodQty, percent);		
 			
 			String message = BlockKitDataParshing.underProduction(blockKit, btnString, btnUrl, plantName, materialName, planQty, prodQty, percent);
 			

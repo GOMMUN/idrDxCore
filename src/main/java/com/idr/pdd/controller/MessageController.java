@@ -17,6 +17,9 @@ import com.idr.pdd.common.Message;
 import com.idr.pdd.common.StatusEnum;
 import com.idr.pdd.service.AnomalydetectService;
 import com.idr.pdd.service.BlockKitService;
+import com.idr.pdd.service.FactoryService;
+import com.idr.pdd.service.MaterialService;
+import com.idr.pdd.vo.Anomalydetect;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,16 +36,27 @@ public class MessageController {
 	
 	@Autowired
 	private BlockKitService blockKitService;
+	
+	@Autowired
+	private FactoryService factoryService;
+	
+	@Autowired
+	private MaterialService materialService;
 
 	@ResponseBody
-	@PostMapping("/underProduction")
+	@PostMapping("/underProduction/notice")
 	@Operation(summary = "통보 > 확인", description = "통보 > 확인")
-    public ResponseEntity<Message> underProduction(String btnUrl, String plantName, String materialName, int planQty, int prodQty, int percent) {
+    public ResponseEntity<Message> underProductionNotice(String plant, String material, int planQty, int prodQty, int percent) {
 		
 		Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         
         try {
+        	
+        	String plantName = factoryService.findName(plant);
+        	String materialName = materialService.findName(material);
+        	
+        	String btnUrl = BlockKitDataParshing.setUnderProductionOccurUrl(plant, material, planQty, prodQty, percent);
         	
         	// 통보 > 확인
         	String messageParam = BlockKitDataParshing.underProduction(
@@ -57,6 +71,41 @@ public class MessageController {
         												);
         	
         	headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+	        
+	        message.setStatus(StatusEnum.OK);
+	        message.setMessage(StatusEnum.OK.toString());
+	        message.setData(null);
+	        
+	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (Exception e) {
+			
+			message.setStatus(StatusEnum.BAD_REQUEST);
+	        message.setMessage(e.getMessage());
+	        message.setData(null);
+	        
+	        return  new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@ResponseBody
+	@PostMapping("/underProduction/confirm")
+	@Operation(summary = "통보 > 확인", description = "통보 > 확인")
+    public ResponseEntity<Message> underProductionConfirm(String btnUrl, String plant, String material, String tid, int planQty, int prodQty, int percent) {
+		
+		Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        
+        try {
+        	
+        	Anomalydetect anomalydetect = new Anomalydetect();
+        	
+        	anomalydetect.setFactory(plant);
+        	anomalydetect.setMessengerid(tid);
+        	anomalydetect.setMessengerReason("UNDER-PRODUCTION");
+        	anomalydetect.setMessengerReasondescription("생산계획 대비 생산량 부족");
+        	anomalydetect.setMessengerState("CONFIRM");
+        	
+        	service.create(null);
 	        
 	        message.setStatus(StatusEnum.OK);
 	        message.setMessage(StatusEnum.OK.toString());
