@@ -12,12 +12,16 @@
 		AND TID = #{tid}
     </select>
     
+    <select id="sumProdQtyBySeq" parameterType="Integer" resultType="Integer">
+        SELECT SUM(PROD_QTY) 
+		FROM DSP_WORK_CONTENTS
+		WHERE WORKDAILY_SEQ = #{dataSeq}
+    </select>
+    
     <insert id="create" parameterType="WorkContentsDTO">
         INSERT INTO DSP_WORK_CONTENTS (
         	WORKTIME_FROM, 
         	WORKTIME_TO, 
-        	MODELID, 
-        	OPERATIONID, 
         	MANHOUR, 
         	PROD_QTY, 
         	FIRSTTIME_GOOD_QTY, 
@@ -29,8 +33,6 @@
         ) VALUES(
         	#{worktimeFrom}
         	, #{worktimeTo}
-        	, #{modelid}
-            , #{operationid}
             , #{manhour}
         	, #{prodQty}
             , #{firsttimeGoodQty}

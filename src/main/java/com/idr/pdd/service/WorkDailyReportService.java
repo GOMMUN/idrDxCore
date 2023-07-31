@@ -31,6 +31,8 @@ public class WorkDailyReportService{
 				.factoryid(param.getPlant())
 				.lineid(param.getLine())
 				.shiftid(param.getShift())
+				.modelid(param.getModel())
+				.materialid(param.getMaterial())
 				.build();
 		
 		return mapper.find(result);
@@ -42,6 +44,8 @@ public class WorkDailyReportService{
 				.factoryid(param.getPlant())
 				.lineid(param.getLine())
 				.shiftid(param.getShift())
+				.modelid(param.getModel())
+				.materialid(param.getMaterial())
 				.build();
 		
 		return mapper.find(result);
@@ -53,6 +57,8 @@ public class WorkDailyReportService{
 				.factoryid(param.getPlant())
 				.lineid(param.getLine())
 				.shiftid(param.getShift())
+				.modelid(param.getModel())
+				.materialid(param.getMaterial())
 				.build();
 		
 		return mapper.find(result);
@@ -64,6 +70,8 @@ public class WorkDailyReportService{
 				.factoryid(param.getPlant())
 				.lineid(param.getLine())
 				.shiftid(param.getShift())
+				.modelid(param.getModel())
+				.materialid(param.getMaterial())
 				.build();
 		
 		return mapper.find(result);
@@ -75,6 +83,8 @@ public class WorkDailyReportService{
 				.factoryid(param.getPlant())
 				.lineid(param.getLine())
 				.shiftid(param.getShift())
+				.modelid(param.getModel())
+				.materialid(param.getMaterial())
 				.build();
 		
 		return mapper.find(result);
@@ -86,6 +96,8 @@ public class WorkDailyReportService{
 				.factoryid(param.getPlant())
 				.lineid(param.getLine())
 				.shiftid(param.getShift())
+				.modelid(param.getModel())
+				.materialid(param.getMaterial())
 				.build();
 		
 		return mapper.find(result);
@@ -97,6 +109,8 @@ public class WorkDailyReportService{
 				.factoryid(param.getPlant())
 				.lineid(param.getLine())
 				.shiftid(param.getShift())
+				.modelid(param.getModel())
+				.materialid(param.getMaterial())
 				.build();
 		
 		return mapper.find(result);
@@ -113,6 +127,8 @@ public class WorkDailyReportService{
 				.factoryid(param.getPlant())
 				.lineid(param.getLine())
 				.shiftid(param.getShift())
+				.modelid(param.getModel())
+				.materialid(param.getMaterial())
 				.build();
 		
 		return mapper.count(result);
@@ -126,6 +142,8 @@ public class WorkDailyReportService{
 										.factoryid(param.getPlant())
 										.lineid(param.getLine())
 										.shiftid(param.getShift())
+										.modelid(param.getModel())
+										.materialid(param.getMaterial())
 										.planQty(param.getPlanqty())
 										.register(param.getRegister())
 										.tid(param.getTid())
@@ -144,6 +162,8 @@ public class WorkDailyReportService{
 					.factoryid(workDailyReport.getPlant())
 					.lineid(workDailyReport.getLine())
 					.shiftid(workDailyReport.getShift())
+					.modelid(workDailyReport.getModel())
+					.materialid(workDailyReport.getMaterial())
 					.register(workDailyReport.getRegister())
 					.tid(workDailyReport.getTid())
 					.build();

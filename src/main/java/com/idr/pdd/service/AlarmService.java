@@ -4,9 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.idr.pdd.common.BlockKitDataParshing;
+import com.idr.pdd.common.SendBlockit;
+import com.idr.pdd.dto.WorkDailyReportDTO;
+import com.idr.pdd.exception.MessageSendException;
 import com.idr.pdd.mapper.AlarmSettingMapper;
 import com.idr.pdd.mapper.BlockKitMapper;
 import com.idr.pdd.mapper.FactoryMapper;
+import com.idr.pdd.mapper.MaterialMapper;
+import com.idr.pdd.mapper.WorkContentsMapper;
+import com.idr.pdd.mapper.WorkDailyReportMapper;
+import com.idr.pdd.vo.WorkContents;
 
 @Service
 public class AlarmService {
@@ -27,8 +34,123 @@ public class AlarmService {
 	
 	@Autowired
 	FactoryMapper factoryMapper;
+	
+	@Autowired
+	MaterialMapper materialMapper;
+	
+	@Autowired
+	WorkDailyReportMapper workDailyReportMapper;
+	
+	@Autowired
+	WorkContentsMapper workContentsMapper;
+	
+	public boolean plantCheck(String plant) {
+		if("KEM".equals(plant)) {
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public void occur(WorkDailyReportDTO parent) throws Exception {
+								
+		int dataSeq = parent.getDataseq();
+		int planQty = parent.getPlanQty();
+		
+		// 생산량 총 합산
+		int prodQty = workContentsMapper.sumProdQtyBySeq(dataSeq);
+		
+		// 백분율
+		int percent = 0;
+		
+		if(planQty == 0 || prodQty == 0) {
+			percent = 0;
+		}else {
+			percent = (int)((double) prodQty / (double) planQty * 100);
+		}
+		
+		// 설정값
+		int value = alarmSettingMapper.find(UNDER_PRODUCTION);
+		
+		// 설정값보다 백분율이 작을경우 알람 발생
+		if(value > percent) {
+			String plantName = factoryMapper.findName(parent.getFactoryid());
+			String materialName = materialMapper.findName(parent.getMaterialid());
+			
+			// blockkit message
+			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
+			String btnString = "통보";
+			String btnUrl = "";			
+			
+			String message = BlockKitDataParshing.underProduction(blockKit, btnString, btnUrl, plantName, materialName, planQty, prodQty, percent);
+			
+			String botId = "RXNW84AM9BC7KDK8";
+			String botToken = SendBlockit.BlockitToken(botId);
+			
+			if(botToken == null) {
+				throw new MessageSendException();
+			}else {
+				SendBlockit.BlockitMesaageSend(botId, botToken, message);
+			}
+		}
+	}
+	
+	public void notice(WorkDailyReportDTO parent) throws Exception {
+		int dataSeq = parent.getDataseq();
+		int planQty = parent.getPlanQty();
+		
+		// 생산량 총 합산
+		int prodQty = workContentsMapper.sumProdQtyBySeq(dataSeq);
+		
+		// 백분율
+		int percent = 0;
+		
+		if(planQty == 0 || prodQty == 0) {
+			percent = 0;
+		}else {
+			percent = (int)((double) prodQty / (double) planQty * 100);
+		}
+		
+		// 설정값
+		int value = alarmSettingMapper.find(UNDER_PRODUCTION);
+		
+		// 설정값보다 백분율이 작을경우 알람 발생
+		if(value > percent) {
+			String plantName = factoryMapper.findName(parent.getFactoryid());
+			String materialName = materialMapper.findName(parent.getMaterialid());
+			
+			// blockkit message
+			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
+			String btnString = "확인";
+			String btnUrl = "";			
+			
+			String message = BlockKitDataParshing.underProduction(blockKit, btnString, btnUrl, plantName, materialName, planQty, prodQty, percent);
+			
+			String botId = "RXNW84AM9BC7KDK8";
+			String botToken = SendBlockit.BlockitToken(botId);
+			
+			if(botToken == null) {
+				throw new MessageSendException();
+			}else {
+				SendBlockit.BlockitMesaageSend(botId, botToken, message);
+			}
+		}
+	}
 
-	public void underProduction(String plant, int planQty, String tid) throws Exception {
+	private void underProduction(WorkContents param) throws Exception {
+		
+		
+		WorkDailyReportDTO dataSeqPlanQty = workDailyReportMapper.findDataseqPlanQty(WorkDailyReportDTO.builder()
+																						.factoryid(param.getPlant())
+																						.lineid(param.getLine())
+																						.workDate(param.getDate())
+																						.shiftid(param.getShift())
+																						.materialid(param.getMaterial())
+																						.modelid(param.getModel()).build()
+																	);
+		
+		int workDailySeq = dataSeqPlanQty.getDataseq();
+		int planQty = dataSeqPlanQty.getPlanQty();
 		
 		// 생산량 총 합산
 		int prodQty = 0;
@@ -42,14 +164,14 @@ public class AlarmService {
 		// 설정값보다 백분율이 작을경우 알람 발생
 		if(value > percent) {
 			
-			String plantName = factoryMapper.findName(plant);
+			String plantName = factoryMapper.findName(param.getPlant());
 			
 			// blockkit message
 			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
 			
 			//String result = BlockKitDataParshing.underProduction(OCCUR, blockKit, plantName, planQty, prodQty, percent);
 			
-			if("KEM".equals(plant)) {
+			if("KEM".equals(param.getPlant())) {
 				// 통보 > 확인 ( 대표기업 )
 			}else {
 				// 발생 > 통보 > 확인 ( 협럽사 )

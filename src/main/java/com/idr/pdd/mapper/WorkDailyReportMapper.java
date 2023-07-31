@@ -13,6 +13,7 @@ import com.idr.pdd.vo.WorkerInput;
 public interface WorkDailyReportMapper {
 
 	WorkDailyReportDTO find(WorkDailyReportDTO dto) throws Exception;
+	WorkDailyReportDTO findDataseqPlanQty(WorkDailyReportDTO param) throws Exception;
 	
 	int count(WorkDailyReportDTO dto) throws Exception;
 	int countByTid(String tid) throws Exception;

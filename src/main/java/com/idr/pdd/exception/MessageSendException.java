@@ -3,6 +3,6 @@ package com.idr.pdd.exception;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class MessageSendException {
+public class MessageSendException extends RuntimeException{
 
 }

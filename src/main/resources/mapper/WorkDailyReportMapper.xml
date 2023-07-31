@@ -12,6 +12,17 @@
 		AND TID = #{tid}
     </select>
     
+    <select id="findDataseqPlanQty" parameterType="WorkDailyReportDTO" resultType="WorkDailyReportDTO">
+        SELECT DATASEQ, PLAN_QTY
+		 FROM DSP_WORKDAILY_REPORT
+		WHERE FACTORYID = #{factoryid}
+		AND WORK_DATE = #{workDate}
+		AND LINEID = #{lineid}
+		AND SHIFTID = #{shiftid}
+		AND MATERIALID = #{materialid}
+		AND MODELID = #{modelid}
+    </select>
+    
     <select id="find" parameterType="WorkDailyReportDTO" resultType="WorkDailyReportDTO">
         SELECT 
         	DATASEQ, 
@@ -19,6 +30,8 @@
         	WORK_DATE, 
         	LINEID, 
         	SHIFTID, 
+        	MODELID,
+        	MATERIALID,
         	REGISTER, 
         	PLAN_QTY,
         	NOTES, 

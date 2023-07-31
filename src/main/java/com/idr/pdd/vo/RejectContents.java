@@ -24,11 +24,11 @@ public class RejectContents {
 	@Schema(name = "material", description = "자재", example = "MOT000324/C")
 	private String material;
 	
-	@Schema(name = "operation", description = "", example = "리크&디포")
-	private String operation;
-	
 	@Schema(name = "rejectcode", description = "", example = "WARTER")
 	private String rejectcode;
+	
+	@Schema(name = "rejecttype", description = "", example = "")
+	private String rejecttype;
 	
 	@Schema(name = "firstrejectqty", description = "", example = "13")
 	private int firstrejectqty;

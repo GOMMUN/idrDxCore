@@ -89,32 +89,12 @@ public class WorkContentsController {
 			
 			int result = service.create(param, dataseq);
 			
-			if("KEM".equals(param.getPlant())) {
-				// 처음에 통보테이블에 insert
-				// blockStr : UNDER-PRODUCTION, FIRST-ARTICLE-CAUTION
-				// btnStr : 확인
-				// btnUrl : 확인 테이블에 데이터를 넣을수 있는 api
+			// 알람 보낼 공장 체크
+			if(!alarmService.plantCheck(param.getPlant())) {
+				alarmService.occur(parent);
 			}else {
-				// 처음에 발생테이블에 insert
-				// blockStr : UNDER-PRODUCTION, FIRST-ARTICLE-CAUTION
-				// btnStr : 통보
-				// btnUrl : 통보 테이블에 데이터를 넣을수 있는 api
+				alarmService.notice(parent);
 			}
-			
-			
-			// 팀플리 메신저 연동 시작
-			// 1. 보낼 데이터(blockKit 데이터 생성)
-			// 1-1. blockStr : 계획대비 생산량부족, 불량품 가져오기
-			// 1-2. btnStr : 파라미터로 들어오 공장명 KEM > 확인, 혈력사 > 통보
-			// 1-3. btnUrl : 파라미터로 들어오 공장명 KEM > 알람 확인 테이블 넣을수있는 구조 , 혈력사 > 알람 통보 테이블에 넣을수 있는구조
-			
-			
-			// 2. 팀플리에 메세지 전송
-			// 2-1 토큰
-			// 2-2 blockkitData 전송
-			alarmService.underProduction(parent.getFactoryid(), parent.getPlanQty(), param.getTid());
-			// 팀플리 메신저 연동 종료
-			
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 	        
 	        message.setStatus(StatusEnum.OK);

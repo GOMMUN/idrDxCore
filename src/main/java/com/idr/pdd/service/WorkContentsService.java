@@ -34,4 +34,8 @@ public class WorkContentsService{
 										.build();
 		return mapper.create(result);
 	}
+	
+	public int sumProdQtyBySeq(int dataSeq) throws Exception{
+		return mapper.sumProdQtyBySeq(dataSeq);
+	}
 }

@@ -8,6 +8,22 @@ import com.google.gson.JsonParser;
 
 public class BlockKitDataParshing {
 	
+	private static String setUrl(String btnUrl, String plantName, String materialName, int planQty, int prodQty, int percent) {
+		
+		String req = null;
+		
+		String url = "https://idrenvision.iptime.org:8071/message/underProduction"
+				+ "?plantName="+plantName
+				+ "&materialName="+materialName
+				+ "&planQty="+planQty
+				+ "&prodQty="+prodQty
+				+ "&percent="+percent
+				+ "&btnUrl="+btnUrl;
+		
+		return url;
+	}
+	
+	// 계획대비 생산량 부족
 	public static String underProduction(String blockKit, String btnString, String btnUrl, String plantName, String materialName, int planQty, int prodQty, int percent) {
 		
 		JsonObject jsonObject = (JsonObject)new JsonParser().parse(blockKit);

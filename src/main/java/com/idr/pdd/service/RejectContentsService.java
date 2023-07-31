@@ -28,9 +28,8 @@ public class RejectContentsService{
 	public int create(RejectContents param, int dataseq) throws Exception {
 		
 		RejectContentsDTO result = RejectContentsDTO.builder()
-										.operationid(param.getOperation())
+										.rejectType(param.getRejecttype())
 										.rejectItemid(param.getRejectcode())
-										.modelid(param.getModel())
 										.firsttimeRejectQty(param.getFirstrejectqty())
 										.reworkRejectQty(param.getReworkrejectqty())
 										.tid(param.getTid())

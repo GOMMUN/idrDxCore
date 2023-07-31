@@ -395,7 +395,7 @@ public class CheckUtils {
 			result = true;
 		}
 		
-		if(param.getOperation().isEmpty()) {
+		if(param.getRejecttype().isEmpty()) {
 			result = false;
 		}else {
 			result = true;

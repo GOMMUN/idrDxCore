@@ -13,9 +13,8 @@ public class RejectContentsDTO {
 	private String lineid;
 	private String shiftid;
 	private String workDate;
-	private String operationid;
 	private String rejectItemid;
-	private String modelid;
+	private String rejectType;
 	private int firsttimeRejectQty;
 	private int reworkRejectQty;
 	private String images;
