@@ -52,6 +52,8 @@ public class AlarmService {
 		}
 	}
 	
+	// 협력사 한테 알람 보내기
+	// 작업내용 용 발생
 	public void occur(WorkDailyReportDTO parent) throws Exception {
 								
 		int dataSeq = parent.getDataseq();
@@ -95,10 +97,15 @@ public class AlarmService {
 		}
 	}
 	
+	// 대표기업한테 알람보내기
+	// 작업내용 용 통보
 	public void notice(WorkDailyReportDTO parent) throws Exception {
 		int dataSeq = parent.getDataseq();
 		int planQty = parent.getPlanQty();
 		
+		
+		
+		// 계획대비 생산량 부족 알람
 		// 생산량 총 합산
 		int prodQty = workContentsMapper.sumProdQtyBySeq(dataSeq);
 		
@@ -135,6 +142,8 @@ public class AlarmService {
 				SendBlockit.BlockitMesaageSend(botId, botToken, message);
 			}
 		}
+		
+		// 불량률 알람
 	}
 
 	private void underProduction(WorkContents param) throws Exception {
