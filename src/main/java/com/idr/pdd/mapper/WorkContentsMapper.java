@@ -14,4 +14,6 @@ public interface WorkContentsMapper {
 	
 	int sumProdQtyBySeq(int dataSeq) throws Exception;
 	
+	int sumFirsttimeFailQty(int dataSeq) throws Exception;
+	
 }

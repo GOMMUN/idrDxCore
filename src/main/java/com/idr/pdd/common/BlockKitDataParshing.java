@@ -8,12 +8,13 @@ import com.google.gson.JsonParser;
 
 public class BlockKitDataParshing {
 	
-	public static String setUnderProductionOccurUrl(String plant, String material, int planQty, int prodQty, int percent) {
+	public static String setUnderProductionOccurUrl(String plant, String material, String tid, int planQty, int prodQty, int percent) {
 		
 		String req = null;
 
-		String url = "http://idrenvision.iptime.org:8171/message/underProduction/confirm"
+		String url = "http://idrenvision.iptime.org:8171/message/underProduction/notice"
 				+ "?plant="+plant
+				+ "&tid="+tid
 				+ "&material="+material
 				+ "&planQty="+planQty
 				+ "&prodQty="+prodQty
@@ -22,12 +23,13 @@ public class BlockKitDataParshing {
 		return url;
 	}
 	
-	public static String setUnderProductionNoticeUrl(String plant, String material, int planQty, int prodQty, int percent) {
+	public static String setUnderProductionNoticeUrl(String plant, String material, String tid, int planQty, int prodQty, int percent) {
 		
 		String req = null;
 
 		String url = "http://idrenvision.iptime.org:8171/message/underProduction/confirm"
 				+ "?plant="+plant
+				+ "&tid="+tid
 				+ "&material="+material
 				+ "&planQty="+planQty
 				+ "&prodQty="+prodQty

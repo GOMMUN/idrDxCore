@@ -91,9 +91,9 @@ public class WorkContentsController {
 			
 			// 알람 보낼 공장 체크
 			if(!alarmService.plantCheck(param.getPlant())) {
-				alarmService.occur(parent);
+				alarmService.occur(parent,param);
 			}else {
-				alarmService.notice(parent);
+				alarmService.notice(parent,param);
 			}
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 	        
