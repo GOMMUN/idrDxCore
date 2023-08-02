@@ -19,6 +19,7 @@ import com.idr.pdd.mapper.MaterialMapper;
 import com.idr.pdd.mapper.WorkContentsMapper;
 import com.idr.pdd.mapper.WorkDailyReportMapper;
 import com.idr.pdd.vo.Anomalydetect;
+import com.idr.pdd.vo.NotoperateContents;
 import com.idr.pdd.vo.WorkContents;
 
 @Service
@@ -177,16 +178,23 @@ public class AlarmService {
 				SendBlockit.BlockitMesaageSend(botId, botToken, message);
 			
 				// 이상감지 알람 테이블에 INSERT
-				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder()
-												.factoryid(plant)
-												.noticeid(tid)
-												.noticeReason(DEFECT_RATE)
-												.noticeReasondescRiption("불량율 알림")
-												.build();
+				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder()
+						.factoryid(plant)
+						.occurid(tid)
+						.occurReason(DEFECT_RATE)
+						.occurReasondescRiption("불량율 알림")
+						.build();
+
+				occurMapper.create(dto);
 												
-				noticeMapper.create(dto);
 			}
 		}
+	}
+	
+	// 비가동 내역 알람 
+	// 설비 이상 알랑 발생 
+	public void occur(WorkDailyReportDTO parent, NotoperateContents param) throws Exception {
+		
 	}
 	
 	// 대표기업한테 알람보내기
@@ -306,5 +314,11 @@ public class AlarmService {
 	        	noticeMapper.create(dto);
 			}
 		}
+	}
+	
+	// 비가동 내역 알람 
+	// 설비 이상 알랑 통보
+	public void notice(WorkDailyReportDTO parent, NotoperateContents param) throws Exception {
+		
 	}
 }

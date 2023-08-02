@@ -29,11 +29,7 @@ public class BlockKitDataParshing {
 
 		String url = "http://idrenvision.iptime.org:8171/message/underProduction/confirm"
 				+ "?plant="+plant
-				+ "&tid="+tid
-				+ "&material="+material
-				+ "&planQty="+planQty
-				+ "&prodQty="+prodQty
-				+ "&percent="+percent;
+				+ "&tid="+tid;
 		
 		return url;
 	}
@@ -60,12 +56,7 @@ public class BlockKitDataParshing {
 
 		String url = "http://idrenvision.iptime.org:8171/message/defectRate/confirm"
 				+ "?plant="+plant
-				+ "&material="+material
-				+ "&tid="+tid
-				+ "&prodDate="+prodDate
-				+ "&failQty="+failQty
-				+ "&prodQty="+prodQty
-				+ "&percent="+percent;
+				+ "&tid="+tid;
 		
 		return url;
 	}

@@ -98,8 +98,6 @@ public class MessageController {
 	        	service.create(anomalydetect);
 			}
 	        
-	        
-        	
         	message.setStatus(StatusEnum.OK.getCode());
 	        message.setMessage(StatusEnum.OK.getName());
 	        message.setData(null);
@@ -117,7 +115,7 @@ public class MessageController {
 	
 	@ResponseBody
 	@GetMapping("/underProduction/confirm")
-    public ResponseEntity<Message> underProductionConfirm(String btnUrl, String plant, String material, String tid, int planQty, int prodQty, int percent) {
+    public ResponseEntity<Message> underProductionConfirm(String plant, String tid) {
 		// 확인 테이블에만 insert
 		// 알람 x
 		Message message = new Message();
@@ -218,7 +216,7 @@ public class MessageController {
 	
 	@ResponseBody
 	@GetMapping("/defectRate/confirm")
-    public ResponseEntity<Message> defectRateConfirm(String btnUrl, String plant, String material, String tid, String prodDate, int failQty, int prodQty, int percent) {
+    public ResponseEntity<Message> defectRateConfirm(String plant, String tid) {
 		
 		Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
