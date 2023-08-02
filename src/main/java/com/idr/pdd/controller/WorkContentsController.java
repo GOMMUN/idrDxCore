@@ -75,7 +75,7 @@ public class WorkContentsController {
 				throw new ValidationException("동일한 TID 존재");
 			}
 			
-			WorkDailyReportDTO parent = pservice.find(param);
+			WorkDailyReportDTO parent = pservice.find(param); 
 			
 			if(parent == null) {
 				throw new ValidationException("작업일보가 존재하지 않습니다.");
