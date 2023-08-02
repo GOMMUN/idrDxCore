@@ -21,10 +21,13 @@ import com.idr.pdd.common.Message;
 import com.idr.pdd.common.StatusEnum;
 import com.idr.pdd.common.CheckUtils;
 import com.idr.pdd.dto.WorkDailyReportDTO;
+import com.idr.pdd.service.AlarmService;
+import com.idr.pdd.service.WorkContentsService;
 import com.idr.pdd.service.WorkDailyReportService;
 import com.idr.pdd.service.WorkerInputService;
 import com.idr.pdd.service.WorkerManhourService;
 import com.idr.pdd.service.WorkerSupportService;
+import com.idr.pdd.vo.WorkContents;
 import com.idr.pdd.vo.WorkDailyReport;
 import com.idr.pdd.vo.WorkerInput;
 import com.idr.pdd.vo.WorkerManhour;
@@ -40,20 +43,21 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("worker-support")
-@Tag(name = "4. 타라인지원내역", description = "WORKER_SUPPORT")
-public class WorkerSupportController {
+@RequestMapping("/alarm")
+public class AlarmController {
 	
 	@Autowired
 	private WorkDailyReportService pservice;
 	
 	@Autowired
-	private WorkerSupportService service;
+	private WorkContentsService service;
+	
+	@Autowired
+	private AlarmService alarmService;
 
 	@ResponseBody
-	@PostMapping("/")
-	@Operation(summary = "등록", description = "타라인지원내역을 신규 등록합니다.")
-    public ResponseEntity<Message> create(@RequestBody WorkerSupport param) {
+	@PostMapping("/workContents")
+    public ResponseEntity<Message> workContents(@RequestBody WorkContents param) {
 		
 		Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
@@ -63,10 +67,6 @@ public class WorkerSupportController {
 			
 			if(!CheckUtils.isValidation(param)) {
 				throw new ValidationException("필수값 입력해주세요.");
-			}
-			
-			if(service.countByTid(param.getTid()) > 0) {
-				throw new ValidationException("동일한 TID 존재");
 			}
 			
 			WorkDailyReportDTO parent = pservice.find(param);
@@ -81,13 +81,18 @@ public class WorkerSupportController {
 				throw new ValidationException("작업일보가 존재하지 않습니다.");
 			}
 			
-			int result = service.create(param, dataseq);
+			// 알람 보낼 공장 체크
+			if(!alarmService.plantCheck(param.getPlant())) {
+				alarmService.occur(parent,param);
+			}else {
+				alarmService.notice(parent,param);
+			}
 			
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 	        
 	        message.setStatus(StatusEnum.OK.getCode());
 	        message.setMessage(StatusEnum.OK.getName());
-	        message.setData(result);
+	        message.setData(null);
 	        
 	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
 		} catch (Exception e) {

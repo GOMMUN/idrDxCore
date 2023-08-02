@@ -97,14 +97,14 @@ public class WorkContentsController {
 			}
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 	        
-	        message.setStatus(StatusEnum.OK);
-	        message.setMessage(StatusEnum.OK.toString());
+	        message.setStatus(StatusEnum.OK.getCode());
+	        message.setMessage(StatusEnum.OK.getName());
 	        message.setData(result);
 	        
 	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
 		} catch (Exception e) {
 			
-			message.setStatus(StatusEnum.BAD_REQUEST);
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
 	        message.setMessage(e.getMessage());
 	        message.setData(null);
 	        

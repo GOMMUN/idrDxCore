@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.idr.pdd.common.BlockKitDataParshing;
+import com.idr.pdd.common.BotId;
 import com.idr.pdd.common.Message;
 import com.idr.pdd.common.SendBlockit;
 import com.idr.pdd.common.StatusEnum;
@@ -32,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/message")
-@Tag(name = "9. 이상감지", description = "")
 public class MessageController {
 	
 	@Autowired
@@ -49,8 +49,9 @@ public class MessageController {
 
 	@ResponseBody
 	@GetMapping("/underProduction/notice")
-	@Operation(summary = "통보 > 확인", description = "통보 > 확인")
     public ResponseEntity<Message> underProductionNotice(String plant, String material, String tid, int planQty, int prodQty, int percent) {
+		// 협력사 > 대표기업으로 알람
+		// 통보 테이블에 insert
 		
 		Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
@@ -77,6 +78,7 @@ public class MessageController {
         	headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
         	
         	String botId = "RXNW84AM9BC7KDK8";
+//        	String botId = BotId.UNDER_PRODUCTION_MAIN.name();
 			String botToken = SendBlockit.BlockitToken(botId);
 			
 			if(botToken == null) {
@@ -98,14 +100,14 @@ public class MessageController {
 	        
 	        
         	
-        	message.setStatus(StatusEnum.OK);
-	        message.setMessage(StatusEnum.OK.toString());
+        	message.setStatus(StatusEnum.OK.getCode());
+	        message.setMessage(StatusEnum.OK.getName());
 	        message.setData(null);
 	        
 	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
         } catch (Exception e) {
 			
-			message.setStatus(StatusEnum.BAD_REQUEST);
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
 	        message.setMessage(e.getMessage());
 	        message.setData(null);
 	        
@@ -115,9 +117,9 @@ public class MessageController {
 	
 	@ResponseBody
 	@GetMapping("/underProduction/confirm")
-	@Operation(summary = "통보 > 확인", description = "통보 > 확인")
     public ResponseEntity<Message> underProductionConfirm(String btnUrl, String plant, String material, String tid, int planQty, int prodQty, int percent) {
-		
+		// 확인 테이블에만 insert
+		// 알람 x
 		Message message = new Message();
         HttpHeaders headers= new HttpHeaders();
         
@@ -133,14 +135,114 @@ public class MessageController {
         	
         	service.create(anomalydetect);
 	        
-	        message.setStatus(StatusEnum.OK);
-	        message.setMessage(StatusEnum.OK.toString());
+	        message.setStatus(StatusEnum.OK.getCode());
+	        message.setMessage(StatusEnum.OK.getName());
 	        message.setData(null);
 	        
 	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
         } catch (Exception e) {
 			
-			message.setStatus(StatusEnum.BAD_REQUEST);
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+	        message.setMessage(e.getMessage());
+	        message.setData(null);
+	        
+	        return  new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@ResponseBody
+	@GetMapping("/defectRate/notice")
+    public ResponseEntity<Message> defectRateNotice(String plant, String material, String tid, String prodDate, int failQty, int prodQty, int percent) {
+		
+		Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        
+        try {
+        	
+        	String plantName = factoryService.findName(plant);
+        	String materialName = materialService.findName(material);
+        	
+        	String btnUrl = BlockKitDataParshing.setDefectRateNoticeUrl(plant, material,tid, prodDate, failQty, prodQty, percent);
+        	
+        	//defectRate(String blockKit, String btnString, String btnUrl, String prodDate, String materialName, int failQty, int prodQty, int percent)
+        	// 통보 > 확인
+        	String messageParam = BlockKitDataParshing.defectRate(
+        													blockKitService.find("DEFECT-RATE"), 
+        													"확인", 
+        													btnUrl,
+        													prodDate, 
+        													materialName, 
+        													failQty, 
+        													prodQty, 
+        													percent
+        												);
+        	
+        	headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        	
+        	String botId = "RXNW84AM9BC7KDK8";
+			String botToken = SendBlockit.BlockitToken(botId);
+			
+			if(botToken == null) {
+				throw new MessageSendException();
+			}else {
+				SendBlockit.BlockitMesaageSend(botId, botToken, messageParam);
+				
+				// 이상감지 알람 테이블에 INSERT
+		        Anomalydetect anomalydetect = new Anomalydetect();
+	        	
+	        	anomalydetect.setFactory(plant);
+	        	anomalydetect.setMessengerid(tid);
+	        	anomalydetect.setMessengerReason("DEFECT-RATE");
+	        	anomalydetect.setMessengerReasondescription("불량율 알림");
+	        	anomalydetect.setMessengerState("NOTICE");
+	        	
+	        	service.create(anomalydetect);
+			}
+	        
+	        
+        	
+        	message.setStatus(StatusEnum.OK.getCode());
+	        message.setMessage(StatusEnum.OK.getName());
+	        message.setData(null);
+	        
+	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (Exception e) {
+			
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+	        message.setMessage(e.getMessage());
+	        message.setData(null);
+	        
+	        return  new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@ResponseBody
+	@GetMapping("/defectRate/confirm")
+    public ResponseEntity<Message> defectRateConfirm(String btnUrl, String plant, String material, String tid, String prodDate, int failQty, int prodQty, int percent) {
+		
+		Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        
+        try {
+        	
+        	Anomalydetect anomalydetect = new Anomalydetect();
+        	
+        	anomalydetect.setFactory(plant);
+        	anomalydetect.setMessengerid(tid);
+        	anomalydetect.setMessengerReason("DEFECT-RATE");
+        	anomalydetect.setMessengerReasondescription("불량율 알림");
+        	anomalydetect.setMessengerState("CONFIRM");
+        	
+        	service.create(anomalydetect);
+	        
+	        message.setStatus(StatusEnum.OK.getCode());
+	        message.setMessage(StatusEnum.OK.getName());
+	        message.setData(null);
+	        
+	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
+        } catch (Exception e) {
+			
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
 	        message.setMessage(e.getMessage());
 	        message.setData(null);
 	        
