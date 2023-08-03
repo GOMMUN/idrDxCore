@@ -30,6 +30,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.SchemaProperties;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.xml.bind.ValidationException;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,10 @@ public class WorkerInputController {
 
 	@ResponseBody
 	@PostMapping("/")
-	@Operation(summary = "등록", description = "작업자투입현황을 신규 등록합니다.")
+	@Operation(summary = "등록", description = "작업자투입현황을 신규 등록합니다.", responses = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "400", description = "BAD_REQUEST")
+	})
     public ResponseEntity<Message> create(@RequestBody WorkerInput param) {
 		
 		Message message = new Message();
