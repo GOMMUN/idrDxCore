@@ -104,4 +104,70 @@ public class WorkDailyReportController {
 		}
     }
 	
+	@Transactional
+	@ResponseBody
+	@PostMapping("/array")
+	@Operation(summary = "등록array", description = "작업일보를 신규 등록합니다.array", responses = {
+			@ApiResponse(responseCode = "200", description = "OK", content = @Content(schema = @Schema(implementation = Message.class))),
+			@ApiResponse(responseCode = "400", description = "BAD_REQUEST")
+	})
+    public ResponseEntity<Message> creates(@RequestBody List<WorkDailyReport> param) {
+		
+		Message message = new Message();
+        HttpHeaders headers= new HttpHeaders();
+        
+		try {
+			for(int i=0;i<param.size();i++)
+			{
+				if(!CheckUtils.isValidation(param.get(i))) {
+					throw new ValidationException("필수값 입력해주세요.");
+				}
+				
+				if(service.countByTid(param.get(i).getTid()) > 0) {
+					throw new ValidationException("동일한 TID 존재");
+				}
+				
+				if(service.countByWorkDailyReport(param.get(i)) > 0) {
+					throw new ValidationException("동일한 작업일보 존재");
+				}
+			}
+			
+			
+			int result = service.create(param);
+			
+			for(int i=0;i<param.size();i++) {
+				jobexechistService.create(param.get(i).getTid(), "Create", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+				jobexechistService.save(param.get(i).getTid(), "Create", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			}
+			
+			
+			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+	        
+	        message.setStatus(StatusEnum.OK.getCode());
+	        message.setMessage(StatusEnum.OK.getName());
+	        message.setData(result);
+	        
+	        for(int i=0;i<param.size();i++) {
+	        	jobexechistService.create(param.get(i).getTid(), "Complited", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+				jobexechistService.save(param.get(i).getTid(), "Complited", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+	        }
+	        
+	        
+	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
+		} catch (Exception e) {
+			
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+	        message.setMessage(e.getMessage());
+	        message.setData(null);
+	        
+	        for(int i=0;i<param.size();i++) {
+	        	 jobexechistService.create(param.get(i).getTid(), "Failed", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+	 			jobexechistService.save(param.get(i).getTid(), "Failed", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+	        }
+	       
+	        
+	        return  new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+		}
+    }
+	
 }

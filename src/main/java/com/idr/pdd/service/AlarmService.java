@@ -115,7 +115,7 @@ public class AlarmService {
 			String message = BlockKitDataParshing.underProduction(blockKit, btnString, btnUrl, plantName, materialName,
 					planQty, prodQty, percent);
 
-			String botId = "RXNW84AM9BC7KDK8";
+			String botId = "38MZKGG4HD2NTO4S";
 //			String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
 			String botToken = SendBlockit.BlockitToken(botId);
 
@@ -152,7 +152,7 @@ public class AlarmService {
 		}
 
 		// 설정값보다 백분율이 작을경우 알람 발생
-		if (value2 > percent2) {
+		if (value2 < percent2) {
 			String plant = parent.getFactoryid();
 
 			String prodDate = parent.getWorkDate();
@@ -172,7 +172,7 @@ public class AlarmService {
 			String message = BlockKitDataParshing.defectRate(blockKit, btnString, btnUrl, prodDate, materialName,
 					firsttimeFailQty, prodQty, percent2);
 
-			String botId = "RXNW84AM9BC7KDK8";
+			String botId = "MA91V6AA52TSUB52";
 //			String botId = BotId.UNDER_PRODUCTION_MAIN.name();
 			String botToken = SendBlockit.BlockitToken(botId);
 
@@ -221,7 +221,7 @@ public class AlarmService {
 			e.printStackTrace();
 		}
 
-		String botId = "RXNW84AM9BC7KDK8";
+		String botId = "82ZAVEDFV7WEUSBS";
 //			String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
 		String botToken = SendBlockit.BlockitToken(botId);
 
@@ -285,7 +285,7 @@ public class AlarmService {
 			String message = BlockKitDataParshing.underProduction(blockKit, btnString, btnUrl, plantName, materialName,
 					planQty, prodQty, percent);
 
-			String botId = "RXNW84AM9BC7KDK8";
+			String botId = "HITKSZRCVCL7C3HM";
 			String botToken = SendBlockit.BlockitToken(botId);
 
 			if (botToken == null) {
@@ -319,7 +319,7 @@ public class AlarmService {
 		}
 
 		// 설정값보다 백분율이 작을경우 알람 발생
-		if (value2 > percent2) {
+		if (value2 < percent2) {
 			String plant = parent.getFactoryid();
 
 			String prodDate = parent.getWorkDate();
@@ -339,7 +339,7 @@ public class AlarmService {
 			String message = BlockKitDataParshing.defectRate(blockKit, btnString, btnUrl, prodDate, materialName,
 					firsttimeFailQty, prodQty, percent2);
 
-			String botId = "RXNW84AM9BC7KDK8";
+			String botId = "2GTR2DMTHDXNPCKA";
 			String botToken = SendBlockit.BlockitToken(botId);
 
 			if (botToken == null) {
@@ -382,7 +382,7 @@ public class AlarmService {
 		String message = BlockKitDataParshing.notoperatePress(blockKit, btnString, btnUrl, plantName, lineName,
 				getdate);
 
-		String botId = "RXNW84AM9BC7KDK8";
+		String botId = "L2E6IAFW9KAZ4ZHT";
 //			String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
 		String botToken = SendBlockit.BlockitToken(botId);
 
