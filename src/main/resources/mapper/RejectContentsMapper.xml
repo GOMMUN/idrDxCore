@@ -14,17 +14,15 @@
     
     <insert id="create" parameterType="RejectContentsDTO">
         INSERT INTO DSP_REJECT_CONTENTS (
-        	OPERATIONID, 
         	REJECT_ITEMID, 
-        	MODELID, 
+        	REJECT_TYPE, 
         	FIRSTTIME_REJECT_QTY, 
         	REWORK_REJECT_QTY, 
         	TID, 
         	WORKDAILY_SEQ
         ) VALUES(
-        	#{operationid}
-        	, #{rejectItemid}
-        	, #{modelid}
+        	  #{rejectItemid}
+        	, #{rejectType}
             , #{firsttimeRejectQty}
             , #{reworkRejectQty}
             , #{tid}
