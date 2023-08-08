@@ -36,11 +36,6 @@ public class NotoperateContentsService{
 										.tid(param.getTid())
 										.workdailySeq(dataseq)
 										.build();
-		try {
-			mapper.create(result);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
 		return mapper.create(result);
 	}
 	
