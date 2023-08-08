@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.AnomalydetectConfirmMapper">
+    
+    <select id="countByTid" parameterType="String" resultType="Integer">
+        SELECT COUNT(TID)
+		 FROM DSP_ANOMALYDETECT_CONFIRM
+		WHERE ISUSABLE IS NOT NULL
+		AND TID = #{tid}
+    </select>
+    
+    <insert id="create" parameterType="AnomalydetectConfirmDTO">
+        INSERT INTO DSP_ANOMALYDETECT_CONFIRM (
+        	FACTORYID,
+        	CONFIRMID, 
+        	CONFIRM_DATETIME, 
+        	CONFIRM_UPDATOR, 
+        	CONFIRM_TARGET,
+        	TID
+        ) VALUES(
+        	#{factoryid}
+        	, #{confirmid}
+        	, GETDATE()
+        	, #{confirmUpdator}
+            , #{confirmTarget}
+            , #{tid}
+        )
+    </insert>
+    
+</mapper>

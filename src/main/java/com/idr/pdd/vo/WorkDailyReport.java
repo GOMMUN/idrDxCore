@@ -30,6 +30,9 @@ public class WorkDailyReport {
 	@Schema(name = "register", description = "작성자", example = "코렌스이엠")
 	private String register;
 	
+	@Schema(name = "notes", description = "특이사항", example = "아랄랄")
+	private String notes;
+	
 	@Schema(name = "tid", description = "tid", example = "7WOR5B3B-242B-4696-AD74-F9D6D8TE0002", required = true)
 	private String tid;
 }

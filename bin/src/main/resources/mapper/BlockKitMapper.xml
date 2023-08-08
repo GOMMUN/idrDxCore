@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.BlockKitMapper">
+    
+    <select id="find" parameterType="String" resultType="String">
+		SELECT BLOCK_KIT_JSON 
+		FROM KA0102 
+		WHERE CONVERSATION_ID = #{type}
+    </select>
+    
+</mapper>

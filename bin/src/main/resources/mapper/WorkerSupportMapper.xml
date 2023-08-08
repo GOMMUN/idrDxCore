@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.WorkerSupportMapper">
+    
+    <select id="countByTid" parameterType="String" resultType="Integer">
+        SELECT COUNT(TID)
+		 FROM DSP_WORKER_SUPPORT
+		WHERE ISUSABLE IS NOT NULL
+		AND TID = #{tid}
+    </select>
+    
+    <insert id="create" parameterType="WorkerSupportDTO">
+        INSERT INTO DSP_WORKER_SUPPORT (
+        	PERSONID, 
+        	SUPPORTTIME_FROM, 
+        	SUPPORTTIME_TO, 
+        	MANHOUR, 
+        	TID, 
+        	WORKDAILY_SEQ
+        ) VALUES(
+        	#{personid}
+        	, #{supporttimeFrom}
+        	, #{supporttimeTo}
+            , #{manhour}
+            , #{tid}
+            , #{workdailySeq}
+        )
+    </insert>
+    
+</mapper>

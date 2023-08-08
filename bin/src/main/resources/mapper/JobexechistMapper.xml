@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.JobexechistMapper">
+    
+    <select id="create" parameterType="JobexechistDTO">
+        INSERT INTO FRW_JOBEXECHIST 
+        (
+        	EXEC_TID
+        	, STATE
+        	, EXEC_STARTTIME
+        	, EXEC_ENDTIME
+        	, MESSAGE_ERROR
+        	, LASTEVENTTIME
+        ) VALUES(
+        	#{execTid}
+			, #{state}				
+			, #{execStarttime}
+			, #{execEndtime}
+			, #{messageError}
+			, getdate()	
+        )
+    </select>
+    
+    <select id="save" parameterType="JobexechistDTO">
+        MERGE INTO FRW_JOBEXECHIST_M AS A
+		USING (
+			SELECT 1 AS DUM
+		) AS B
+		ON (
+			A.EXEC_TID = #{execTid}
+			)
+		WHEN MATCHED THEN
+			UPDATE SET 
+				 STATE = #{state}
+				 , EXEC_STARTTIME = #{execStarttime}
+				 , EXEC_ENDTIME = #{execEndtime}
+				 , MESSAGE_ERROR = #{messageError}
+				 , LASTEVENTTIME = getdate()
+		WHEN NOT MATCHED THEN 
+			INSERT(
+				 EXEC_TID
+				 , STATE
+				 , EXEC_STARTTIME
+				 , EXEC_ENDTIME
+				 , MESSAGE_ERROR
+				 , LASTEVENTTIME	
+			) 
+			VALUES(
+				#{execTid}
+				,#{state}				
+				,#{execStarttime}
+				,#{execEndtime}
+				,#{messageError}
+				,getdate()			
+			);
+    </select>
+    
+</mapper>

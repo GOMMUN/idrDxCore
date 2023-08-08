@@ -81,6 +81,7 @@
              , MATERIALID
              , REGISTER
              , PLAN_QTY
+             , NOTES
              , TID
         )
         VALUES (
@@ -92,6 +93,7 @@
              , #{materialid}
              , #{register}
              , #{planQty}
+             ,#{notes}
              , #{tid}
         )
     </insert>
