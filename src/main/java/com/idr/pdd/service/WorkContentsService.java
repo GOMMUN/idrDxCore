@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.idr.pdd.vo.WorkContents;
 import com.idr.pdd.dto.WorkContentsDTO;
 import com.idr.pdd.mapper.WorkContentsMapper;
+import java.util.List;
 
 @Service
 public class WorkContentsService{
@@ -33,6 +34,28 @@ public class WorkContentsService{
 										.workdailySeq(dataseq)
 										.build();
 		return mapper.create(result);
+	}
+	
+	@Transactional
+	public int create(List<WorkContents> param, int dataseq) throws Exception {
+		int result=0;
+		for(WorkContents workcontent:param) {
+			WorkContentsDTO dto = WorkContentsDTO.builder()
+					.worktimeFrom(workcontent.getFromtime())
+					.worktimeTo(workcontent.getTotime())
+					.manhour(workcontent.getManhour())
+					.prodQty(workcontent.getProdqty())
+					.firsttimeGoodQty(workcontent.getFirstgoodqty())
+					.firsttimeFailQty(workcontent.getFirstfailqty())
+					.reworkGoodQty(workcontent.getReworkgoodqty())
+					.reworkFailQty(workcontent.getReworkfailqty())
+					.tid(workcontent.getTid())
+					.workdailySeq(dataseq)
+					.build();
+			result+=mapper.create(dto);
+		}
+		
+		return result;
 	}
 	
 	public int sumProdQtyBySeq(int dataSeq) throws Exception{

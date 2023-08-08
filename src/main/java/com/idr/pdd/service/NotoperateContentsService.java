@@ -1,5 +1,7 @@
 package com.idr.pdd.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,5 +37,26 @@ public class NotoperateContentsService{
 										.workdailySeq(dataseq)
 										.build();
 		return mapper.create(result);
+	}
+	
+	@Transactional
+	public int create(List<NotoperateContents> param, int dataseq) throws Exception {
+		int result=0;
+		for(NotoperateContents notopercontent:param) {
+			NotoperateContentsDTO dto =  NotoperateContentsDTO.builder()
+					.notoperatetimeFrom(notopercontent.getFromtime())
+					.notoperatetimeTo(notopercontent.getTotime())
+					.hands(notopercontent.getMan())
+					.manhour(notopercontent.getManhour())
+					.cause(notopercontent.getContentcause())
+					.correctiveAction(notopercontent.getCorrectiveaction())
+					.tid(notopercontent.getTid())
+					.workdailySeq(dataseq)
+					.build();
+			
+			result+=mapper.create(dto);
+		}
+		
+		return result;
 	}
 }

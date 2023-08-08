@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -50,16 +51,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("work-contents")
 @Tag(name = "5. 작업내용", description = "WORK_COUNTENTS")
 public class WorkContentsController {
-	
+
 	@Autowired
 	private WorkDailyReportService pservice;
-	
+
 	@Autowired
 	private WorkContentsService service;
-	
+
 	@Autowired
 	private AlarmService alarmService;
-	
+
 	@Autowired
 	private JobexechistService jobexechistService;
 
@@ -67,77 +68,195 @@ public class WorkContentsController {
 	@PostMapping("/")
 	@Operation(summary = "등록", description = "작업내용을 신규 등록합니다.", responses = {
 			@ApiResponse(responseCode = "200", description = "OK"),
-			@ApiResponse(responseCode = "400", description = "BAD_REQUEST")
-	})
-    public ResponseEntity<Message> create(@RequestBody WorkContents param) {
-		
+			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
+	public ResponseEntity<Message> create(@RequestBody WorkContents param) {
+
 		Message message = new Message();
-        HttpHeaders headers= new HttpHeaders();
-        
+		HttpHeaders headers = new HttpHeaders();
+
 		try {
 			int dataseq = 0;
-			
-			if(!CheckUtils.isValidation(param)) {
+
+			if (!CheckUtils.isValidation(param)) {
 				throw new ValidationException("필수값 입력해주세요.");
 			}
-			
-			if(service.countByTid(param.getTid()) > 0) {
+
+			if (service.countByTid(param.getTid()) > 0) {
 				throw new ValidationException("동일한 TID 존재");
 			}
-			
-			WorkDailyReportDTO parent = pservice.find(param); 
-			
-			if(parent == null) {
+
+			WorkDailyReportDTO parent = pservice.find(param);
+
+			if (parent == null) {
 				throw new ValidationException("작업일보가 존재하지 않습니다.");
 			}
-			
+
 			dataseq = parent.getDataseq();
-			
-			if(dataseq == 0) {
+
+			if (dataseq == 0) {
 				throw new ValidationException("작업일보가 존재하지 않습니다.");
 			}
-			
+
 			int result = service.create(param, dataseq);
-			
-			jobexechistService.create(param.getTid(), "Create", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			jobexechistService.save(param.getTid(), "Create", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			
+
+			jobexechistService.create(param.getTid(), "Create",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			jobexechistService.save(param.getTid(), "Create",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+
 			// 알람 보낼 공장 체크
-			if(!alarmService.plantCheck(param.getPlant())) {
-				alarmService.occur(parent,param);
-				
-				jobexechistService.create(param.getTid(), "Send", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-				jobexechistService.save(param.getTid(), "Send", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			}else {
-				alarmService.notice(parent,param);
-				
-				jobexechistService.create(param.getTid(), "Send", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-				jobexechistService.save(param.getTid(), "Send", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			if (!alarmService.plantCheck(param.getPlant())) {
+				alarmService.occur(parent, param);
+
+				jobexechistService.create(param.getTid(), "Send",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+				jobexechistService.save(param.getTid(), "Send",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			} else {
+				alarmService.notice(parent, param);
+
+				jobexechistService.create(param.getTid(), "Send",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+				jobexechistService.save(param.getTid(), "Send",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
 			}
-			
+
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-	        
-	        message.setStatus(StatusEnum.OK.getCode());
-	        message.setMessage(StatusEnum.OK.getName());
-	        message.setData(result);
-	        
-	        jobexechistService.create(param.getTid(), "Complited", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-	        jobexechistService.save(param.getTid(), "Complited", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-	        
-	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
+
+			message.setStatus(StatusEnum.OK.getCode());
+			message.setMessage(StatusEnum.OK.getName());
+			message.setData(result);
+
+			jobexechistService.create(param.getTid(), "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			jobexechistService.save(param.getTid(), "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		} catch (Exception e) {
-			
+
 			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
-	        message.setMessage(e.getMessage());
-	        message.setData(null);
-	        
-	        jobexechistService.create(param.getTid(), "Fail", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-	        jobexechistService.save(param.getTid(), "Fail", LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-	        
-	        return  new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+			message.setMessage(e.getMessage());
+			message.setData(null);
+
+			jobexechistService.create(param.getTid(), "Fail",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			jobexechistService.save(param.getTid(), "Fail",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+
+			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
 		}
-    }
-	
-	
-	
+	}
+
+	@ResponseBody
+	@PostMapping("/array")
+	@Operation(summary = "등록", description = "작업내용을 신규 등록합니다.", responses = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
+	public ResponseEntity<Message> creates(@RequestBody List<WorkContents> param) {
+
+		Message message = new Message();
+		HttpHeaders headers = new HttpHeaders();
+		String tid = createTid(8).toUpperCase() + "-" + createTid(4).toUpperCase() + "-" + createTid(4).toUpperCase() +
+				"-" + createTid(4).toUpperCase() + "-" + createTid(16).toUpperCase();
+		try {
+			WorkDailyReportDTO parent = null;
+			int dataseq = 0;
+			for (WorkContents workcontents : param) {
+				if (!CheckUtils.isValidation(workcontents)) {
+					throw new ValidationException("필수값 입력해주세요.");
+				}
+
+				if (service.countByTid(workcontents.getTid()) > 0) {
+					throw new ValidationException("동일한 TID 존재");
+				}
+
+				parent = pservice.find(workcontents);
+
+				if (parent == null) {
+					throw new ValidationException("작업일보가 존재하지 않습니다.");
+				}
+
+				dataseq = parent.getDataseq();
+
+				if (dataseq == 0) {
+					throw new ValidationException("작업일보가 존재하지 않습니다.");
+				}
+			}
+
+			int result = service.create(param, dataseq);
+
+			jobexechistService.create(tid, "Create",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			jobexechistService.save(tid, "Create",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+
+			// 알람 보낼 공장 체크
+			if (!alarmService.plantCheck(param.get(0).getPlant())) {
+				alarmService.occur(parent, param, tid);
+
+				jobexechistService.create(tid, "Send",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+				jobexechistService.save(tid, "Send",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			} else {
+				alarmService.notice(parent, param, tid);
+
+				jobexechistService.create(tid, "Send",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+				jobexechistService.save(tid, "Send",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			}
+
+			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+			message.setStatus(StatusEnum.OK.getCode());
+			message.setMessage(StatusEnum.OK.getName());
+			message.setData(result);
+
+			jobexechistService.create(tid, "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			jobexechistService.save(tid, "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+		} catch (Exception e) {
+
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+			message.setMessage(e.getMessage());
+			message.setData(null);
+
+			jobexechistService.create(tid, "Fail",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			jobexechistService.save(tid, "Fail",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+
+			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	public String createTid(int num) {
+		Random rnd = new Random();
+
+		StringBuffer buf = new StringBuffer();
+
+		for (int i = 0; i < num; i++) {
+
+			// rnd.nextBoolean() 는 랜덤으로 true, false 를 리턴. true일 시 랜덤 한 소문자를, false 일 시 랜덤 한
+			// 숫자를 StringBuffer 에 append 한다.
+
+			if (rnd.nextBoolean()) {
+
+				buf.append((char) ((int) (rnd.nextInt(26)) + 97));
+
+			} else {
+
+				buf.append((rnd.nextInt(10)));
+
+			}
+
+		}
+		return buf.toString();
+	}
+
 }
