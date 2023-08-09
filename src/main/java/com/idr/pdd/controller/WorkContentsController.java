@@ -157,8 +157,8 @@ public class WorkContentsController {
 
 		Message message = new Message();
 		HttpHeaders headers = new HttpHeaders();
-		String tid = createTid(8).toUpperCase() + "-" + createTid(4).toUpperCase() + "-" + createTid(4).toUpperCase() +
-				"-" + createTid(4).toUpperCase() + "-" + createTid(16).toUpperCase();
+		String tid = createTid(8).toUpperCase() + "-" + createTid(4).toUpperCase() + "-" + createTid(4).toUpperCase()
+				+ "-" + createTid(4).toUpperCase() + "-" + createTid(16).toUpperCase();
 		try {
 			WorkDailyReportDTO parent = null;
 			int dataseq = 0;
@@ -186,11 +186,12 @@ public class WorkContentsController {
 
 			int result = service.create(param, dataseq);
 
-			jobexechistService.create(tid, "Create",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			jobexechistService.save(tid, "Create",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-
+			for (WorkContents workcontents : param) {
+				jobexechistService.create(workcontents.getTid(), "Create",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+				jobexechistService.save(workcontents.getTid(), "Create",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			}
 			// 알람 보낼 공장 체크
 			if (!alarmService.plantCheck(param.get(0).getPlant())) {
 				alarmService.occur(parent, param, tid);
@@ -214,10 +215,12 @@ public class WorkContentsController {
 			message.setMessage(StatusEnum.OK.getName());
 			message.setData(result);
 
-			jobexechistService.create(tid, "Complited",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			jobexechistService.save(tid, "Complited",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			for (WorkContents workcontents : param) {
+				jobexechistService.create(workcontents.getTid(), "Complited",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+				jobexechistService.save(workcontents.getTid(), "Complited",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+			}
 
 			return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		} catch (Exception e) {
@@ -226,12 +229,14 @@ public class WorkContentsController {
 			message.setMessage(e.getMessage());
 			message.setData(null);
 
-			jobexechistService.create(tid, "Fail",
+			for (WorkContents workcontents : param) {
+			jobexechistService.create(workcontents.getTid(), "Fail",
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			jobexechistService.save(tid, "Fail",
+			jobexechistService.save(workcontents.getTid(), "Fail",
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-
+			}
 			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+			
 		}
 	}
 

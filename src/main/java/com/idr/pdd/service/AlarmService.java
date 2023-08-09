@@ -360,6 +360,58 @@ public class AlarmService {
 
 	}
 
+	// 비가동 내역 알람 ARRAY
+	// 설비 이상 알랑 발생 ARRAY
+	public void occur(WorkDailyReportDTO parent, List<NotoperateContents> param) throws Exception {
+
+		int dataSeq = parent.getDataseq();
+		int planQty = parent.getPlanQty();
+
+		String plant = parent.getFactoryid();
+		String plantName = factoryMapper.findName(plant);
+
+		String line = parent.getLineid();
+		String lineName = lineMapper.findName(line);
+
+		for (NotoperateContents nopc : param) {
+			String getdate = parent.getWorkDate().substring(4, 6) + '-' + parent.getWorkDate().substring(6) + " "
+					+ nopc.getFromtime().substring(0, 2) + ':' + nopc.getFromtime().substring(2, 4) + ':'
+					+ nopc.getFromtime().substring(4);
+			String tid = nopc.getTid();
+
+			// blockkit message
+			String blockKit = blockKitMapper.find(NOTOPERATE_PRESS);
+			String btnString = "통보";
+			String btnUrl = BlockKitDataParshing.setNotOperatepressOccurUrl(plant, line, getdate, tid);
+			String message = null;
+			try {
+				message = BlockKitDataParshing.notoperatePress(blockKit, btnString, btnUrl, plantName, lineName,
+						getdate);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			String botId = "82ZAVEDFV7WEUSBS";
+//			String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
+			String botToken = SendBlockit.BlockitToken(botId);
+
+			if (botToken == null) {
+				throw new MessageSendException();
+			} else {
+				SendBlockit.BlockitMesaageSend(botId, botToken, message);
+
+				// 이상감지 알람 테이블에 INSERT
+				Anomalydetect anomalydetect = new Anomalydetect();
+
+				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid)
+						.occurReason(NOTOPERATE_PRESS).occurReasondescRiption("프레스 설비 작동 이상").build();
+
+				occurMapper.create(dto);
+			}
+		}
+
+	}
+
 	// 대표기업한테 알람보내기
 	// 작업내용 용 통보
 	public void notice(WorkDailyReportDTO parent, WorkContents param) throws Exception {
@@ -624,6 +676,49 @@ public class AlarmService {
 					.noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동 이상").build();
 
 			noticeMapper.create(dto);
+		}
+	}
+
+	// 비가동 내역 알람ARRAY
+	// 설비 이상 알랑 통보ARRAY
+	public void notice(WorkDailyReportDTO parent, List<NotoperateContents> param) throws Exception {
+
+		int dataSeq = parent.getDataseq();
+		int planQty = parent.getPlanQty();
+
+		String plant = parent.getFactoryid();
+		String plantName = factoryMapper.findName(plant);
+
+		String line = parent.getLineid();
+		String lineName = lineMapper.findName(line);
+
+		for (NotoperateContents nopc : param) {
+			String getdate = parent.getWorkDate().substring(4, 6) + '-' + parent.getWorkDate().substring(6) + " "
+					+ nopc.getFromtime().substring(0, 2) + ':' + nopc.getFromtime().substring(2, 4) + ':'
+					+ nopc.getFromtime().substring(4);
+			String tid = nopc.getTid();
+
+			// blockkit message
+			String blockKit = blockKitMapper.find(NOTOPERATE_PRESS);
+			String btnString = "확인";
+			String btnUrl = BlockKitDataParshing.setNotOperatepressNoticeUrl(plant, line, getdate, tid);
+			String message = BlockKitDataParshing.notoperatePress(blockKit, btnString, btnUrl, plantName, lineName,
+					getdate);
+
+			String botId = "L2E6IAFW9KAZ4ZHT";
+//				String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
+			String botToken = SendBlockit.BlockitToken(botId);
+
+			if (botToken == null) {
+				throw new MessageSendException();
+			} else {
+				SendBlockit.BlockitMesaageSend(botId, botToken, message);
+
+				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid)
+						.noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동 이상").build();
+
+				noticeMapper.create(dto);
+			}
 		}
 	}
 

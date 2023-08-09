@@ -118,7 +118,7 @@ public class NotoperateContentsController {
 			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
 		}
 	}
-	/*
+	
 	@ResponseBody
 	@PostMapping("/array")
 	@Operation(summary = "등록array", description = "array비가동내역을 신규 등록합니다.")
@@ -159,10 +159,10 @@ public class NotoperateContentsController {
 
 			// 알람 보낼 공장 체크
 			if (!alarmService.plantCheck(param.get(0).getPlant())) {
-				alarmService.occur(parent, param, tid);
+				alarmService.occur(parent, param);
 
 			} else {
-				alarmService.notice(parent, param, tid);
+				alarmService.notice(parent, param);
 
 				
 			}
@@ -210,6 +210,6 @@ public class NotoperateContentsController {
 		}
 		return buf.toString();
 	}
-*/
+
 
 }

@@ -1,6 +1,8 @@
 package com.idr.pdd.controller;
 
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ import com.idr.pdd.common.Message;
 import com.idr.pdd.common.StatusEnum;
 import com.idr.pdd.common.CheckUtils;
 import com.idr.pdd.dto.WorkDailyReportDTO;
+import com.idr.pdd.service.JobexechistService;
 import com.idr.pdd.service.WorkDailyReportService;
 import com.idr.pdd.service.WorkerInputService;
 import com.idr.pdd.service.WorkerManhourService;
@@ -44,66 +47,140 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("worker-support")
 @Tag(name = "4. 타라인지원내역", description = "WORKER_SUPPORT")
 public class WorkerSupportController {
-	
+
 	@Autowired
 	private WorkDailyReportService pservice;
-	
+
 	@Autowired
 	private WorkerSupportService service;
 
+	@Autowired
+	private JobexechistService jobexechistService;
+	
 	@ResponseBody
 	@PostMapping("/")
 	@Operation(summary = "등록", description = "타라인지원내역을 신규 등록합니다.", responses = {
 			@ApiResponse(responseCode = "200", description = "OK"),
-			@ApiResponse(responseCode = "400", description = "BAD_REQUEST")
-	})
-    public ResponseEntity<Message> create(@RequestBody WorkerSupport param) {
-		
+			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
+	public ResponseEntity<Message> create(@RequestBody WorkerSupport param) {
+
 		Message message = new Message();
-        HttpHeaders headers= new HttpHeaders();
-        
+		HttpHeaders headers = new HttpHeaders();
+
 		try {
 			int dataseq = 0;
-			
-			if(!CheckUtils.isValidation(param)) {
+
+			if (!CheckUtils.isValidation(param)) {
 				throw new ValidationException("필수값 입력해주세요.");
 			}
-			
-			if(service.countByTid(param.getTid()) > 0) {
+
+			if (service.countByTid(param.getTid()) > 0) {
 				throw new ValidationException("동일한 TID 존재");
 			}
-			
+
 			WorkDailyReportDTO parent = pservice.find(param);
-			
-			if(parent == null) {
+
+			if (parent == null) {
 				throw new ValidationException("작업일보가 존재하지 않습니다.");
 			}
-			
+
 			dataseq = parent.getDataseq();
-			
-			if(dataseq == 0) {
+
+			if (dataseq == 0) {
 				throw new ValidationException("작업일보가 존재하지 않습니다.");
 			}
-			
+
 			int result = service.create(param, dataseq);
-			
+
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-	        
-	        message.setStatus(StatusEnum.OK.getCode());
-	        message.setMessage(StatusEnum.OK.getName());
-	        message.setData(result);
-	        
-	        return  new ResponseEntity<>(message, headers, HttpStatus.OK);
+
+			message.setStatus(StatusEnum.OK.getCode());
+			message.setMessage(StatusEnum.OK.getName());
+			message.setData(result);
+
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		} catch (Exception e) {
-			
+
 			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
-	        message.setMessage(e.getMessage());
-	        message.setData(null);
-	        
-	        return  new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+			message.setMessage(e.getMessage());
+			message.setData(null);
+
+			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
 		}
-    }
-	
-	
-	
+	}
+
+	@ResponseBody
+	@PostMapping("/array")
+	@Operation(summary = "등록array", description = "array타라인지원내역을 신규 등록합니다.", responses = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
+	public ResponseEntity<Message> creates(@RequestBody List<WorkerSupport> param) {
+
+		Message message = new Message();
+		HttpHeaders headers = new HttpHeaders();
+
+		try {
+			int dataseq = 0;
+
+			for (WorkerSupport ws : param) {
+				if (!CheckUtils.isValidation(ws)) {
+					throw new ValidationException("필수값 입력해주세요.");
+				}
+
+				if (service.countByTid(ws.getTid()) > 0) {
+					throw new ValidationException("동일한 TID 존재");
+				}
+
+				WorkDailyReportDTO parent = pservice.find(ws);
+
+				if (parent == null) {
+					throw new ValidationException("작업일보가 존재하지 않습니다.");
+				}
+
+				dataseq = parent.getDataseq();
+
+				if (dataseq == 0) {
+					throw new ValidationException("작업일보가 존재하지 않습니다.");
+				}
+			}
+
+			int result = service.create(param, dataseq);
+
+			for (WorkerSupport ws : param) {
+				jobexechistService.create(ws.getTid(), "Create",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+				jobexechistService.save(ws.getTid(), "Create",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			}
+			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+			message.setStatus(StatusEnum.OK.getCode());
+			message.setMessage(StatusEnum.OK.getName());
+			message.setData(result);
+
+			for (WorkerSupport ws : param) {
+				jobexechistService.create(ws.getTid(), "Complited",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+				jobexechistService.save(ws.getTid(), "Complited",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			}
+
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+		} catch (Exception e) {
+
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+			message.setMessage(e.getMessage());
+			message.setData(null);
+
+			for (WorkerSupport ws : param) {
+				jobexechistService.create(ws.getTid(), "Failed",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+				jobexechistService.save(ws.getTid(), "Failed",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			}
+
+			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+		}
+	}
+
 }

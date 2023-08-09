@@ -1,14 +1,17 @@
 package com.idr.pdd.controller;
 
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-
+import com.idr.pdd.service.JobexechistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +49,9 @@ public class WorkerInputController {
 
 	@Autowired
 	private WorkerInputService service;
+
+	@Autowired
+	private JobexechistService jobexechistService;
 
 	@ResponseBody
 	@PostMapping("/")
@@ -99,5 +105,77 @@ public class WorkerInputController {
 		}
 	}
 
+	@Transactional
+	@ResponseBody
+	@PostMapping("/array")
+	@Operation(summary = "등록array", description = "array작업자투입현황을 신규 등록합니다.", responses = {
+			@ApiResponse(responseCode = "200", description = "OK"),
+			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
+	public ResponseEntity<Message> creates(@RequestBody List<WorkerInput> param) {
+
+		Message message = new Message();
+		HttpHeaders headers = new HttpHeaders();
+		int result = 0;
+		try {
+			int dataseq = 0;
+			for (WorkerInput wi : param) {
+				if (!CheckUtils.isValidation(wi)) {
+					throw new ValidationException("필수값 입력해주세요.");
+				}
+
+				if (service.countByTid(wi.getTid()) > 0) {
+					throw new ValidationException("동일한 TID 존재");
+				}
+
+				WorkDailyReportDTO parent = pservice.find(wi);
+
+				if (parent == null) {
+					throw new ValidationException("작업일보가 존재하지 않습니다.");
+				}
+
+				dataseq = parent.getDataseq();
+
+				if (dataseq == 0) {
+					throw new ValidationException("작업일보가 존재하지 않습니다.");
+				}
+
+			}
+			result = service.create(param, dataseq);
+
+			for (WorkerInput wi : param) {
+				jobexechistService.create(wi.getTid(), "Create",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+				jobexechistService.save(wi.getTid(), "Create",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			}
+			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+			message.setStatus(StatusEnum.OK.getCode());
+			message.setMessage(StatusEnum.OK.getName());
+			message.setData(result);
+
+			for (WorkerInput wi : param) {
+				jobexechistService.create(wi.getTid(), "Complited",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+				jobexechistService.save(wi.getTid(), "Complited",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			}
+
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+		} catch (Exception e) {
+
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+			message.setMessage(e.getMessage());
+			message.setData(null);
+			for (WorkerInput wi : param) {
+				jobexechistService.create(wi.getTid(), "Failed",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+				jobexechistService.save(wi.getTid(), "Failed",
+						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			}
+
+			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+		}
+	}
 
 }

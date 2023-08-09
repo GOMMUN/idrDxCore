@@ -34,6 +34,22 @@ public class WorkerInputService{
 										.build();
 		return mapper.create(result);
 	}
+	
+	@Transactional
+	public int create(List<WorkerInput> param, int dataseq) throws Exception {
+		int result=0;
+		for(WorkerInput wi:param) {
+			WorkerInputDTO dto = WorkerInputDTO.builder()
+					.personid(wi.getWorker())
+					.overtime(wi.getOvertime())
+					.tid(wi.getTid())
+					.workdailySeq(dataseq)
+					.build();
+			result += mapper.create(dto);
+		}
+		
+		return result;
+	}
 
 	
 }
