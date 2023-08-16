@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -107,9 +108,11 @@ public class WorkerManhourController {
 		}
 	}
 
+	@Transactional
 	@ResponseBody
 	@PostMapping("/array")
-	@Operation(summary = "등록array", description = "array공수투입현황을 신규 등록합니다.", responses = {
+//	@Operation(summary = "등록array", description = "array공수투입현황을 신규 등록합니다.", responses = {
+	@Operation(summary = "등록", description = "공수투입현황을 신규 등록합니다.", responses = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
 	public ResponseEntity<Message> created(@RequestBody List<WorkerManhour> param) {
@@ -119,14 +122,14 @@ public class WorkerManhourController {
 
 		try {
 			int dataseq = 0;
+			
+			if (service.countByTid(param.get(0).getTid()) > 0) {
+				throw new ValidationException("동일한 TID 존재");
+			}
 
 			for (WorkerManhour wm : param) {
 				if (!CheckUtils.isValidation(wm)) {
 					throw new ValidationException("필수값 입력해주세요.");
-				}
-
-				if (service.countByTid(wm.getTid()) > 0) {
-					throw new ValidationException("동일한 TID 존재");
 				}
 
 				WorkDailyReportDTO parent = pservice.find(wm);

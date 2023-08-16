@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.idr.pdd.dto.JobexechistDTO;
 import com.idr.pdd.mapper.JobexechistMapper;
@@ -15,6 +16,7 @@ public class JobexechistService {
 	@Autowired
 	private JobexechistMapper mapper;
 	
+	@Transactional
 	public void create(String tid, String state, String start, String error) {
 		
 		JobexechistDTO dto = new JobexechistDTO();
@@ -27,6 +29,7 @@ public class JobexechistService {
 		mapper.create(dto);
 	}
 	
+	@Transactional
 	public void save(String tid, String state, String start, String error){
 		JobexechistDTO dto = new JobexechistDTO();
 		dto.setExecTid(tid);

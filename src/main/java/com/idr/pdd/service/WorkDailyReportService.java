@@ -1,5 +1,7 @@
 package com.idr.pdd.service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -14,9 +16,11 @@ import com.idr.pdd.vo.WorkDailyReport;
 import com.idr.pdd.vo.WorkerInput;
 import com.idr.pdd.vo.WorkerManhour;
 import com.idr.pdd.vo.WorkerSupport;
-import com.idr.pdd.dto.AnomalydetectConfirmDTO;
+import com.idr.pdd.common.CheckUtils;
+import com.idr.pdd.dto.JobexechistDTO;
 import com.idr.pdd.dto.WorkDailyReportDTO;
-import com.idr.pdd.dto.WorkerInputDTO;
+import com.idr.pdd.exception.ValidationException;
+import com.idr.pdd.mapper.JobexechistMapper;
 import com.idr.pdd.mapper.WorkDailyReportMapper;
 
 @Service
@@ -24,6 +28,9 @@ public class WorkDailyReportService{
 
 	@Autowired
 	WorkDailyReportMapper mapper;
+	
+	@Autowired
+	JobexechistMapper jobMapper;
 	
 	public WorkDailyReportDTO find(WorkDailyReport param) throws Exception {
 		WorkDailyReportDTO result = WorkDailyReportDTO.builder()
@@ -135,7 +142,30 @@ public class WorkDailyReportService{
 	}
 	
 	@Transactional
-	public int create(WorkDailyReport param) throws Exception {
+	public int create(List<WorkDailyReport> params) throws Exception {
+
+		int result = 0;
+		
+		for (WorkDailyReport param : params) {
+			
+			if (!CheckUtils.isValidation(param)) {
+				throw new ValidationException("필수값 입력해주세요.");
+			}
+			
+			if (countByWorkDailyReport(param) > 0) {
+				throw new ValidationException("동일한 작업일보 존재");
+			}
+			
+			result += create(param);
+		
+			jobexechist(params.get(0).getTid(), "Create",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+		}
+		
+		return result;
+	}
+	
+	private int create(WorkDailyReport param) throws Exception {
 		
 		WorkDailyReportDTO result = WorkDailyReportDTO.builder()
 										.workDate(param.getDate())
@@ -152,26 +182,16 @@ public class WorkDailyReportService{
 		return mapper.create(result);
 	}
 	
-	@Transactional
-	public int create(List<WorkDailyReport> param) throws Exception {
+	private void jobexechist(String tid, String state, String start, String error) {
 		
-		int result = 0;
+		JobexechistDTO dto = new JobexechistDTO();
+		dto.setExecTid(tid);
+		dto.setExecStarttime(start);
+		dto.setExecEndtime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")));
+		dto.setState(state);
+		dto.setMessageError(error);
 		
-		for (WorkDailyReport workDailyReport : param) {
-			WorkDailyReportDTO dto = WorkDailyReportDTO.builder()
-					.workDate(workDailyReport.getDate())
-					.factoryid(workDailyReport.getPlant())
-					.lineid(workDailyReport.getLine())
-					.shiftid(workDailyReport.getShift())
-					.modelid(workDailyReport.getModel())
-					.materialid(workDailyReport.getMaterial())
-					.register(workDailyReport.getRegister())
-					.tid(workDailyReport.getTid())
-					.build();
-			result += mapper.create(dto);
-		}
-		return result;
+		jobMapper.create(dto);
+		jobMapper.save(dto);
 	}
-	
-
 }

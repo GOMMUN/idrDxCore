@@ -126,9 +126,14 @@ public class NotoperateContentsController {
 
 		Message message = new Message();
 		HttpHeaders headers = new HttpHeaders();
-		String tid = createTid(8).toUpperCase() + "-" + createTid(4).toUpperCase() + "-" + createTid(4).toUpperCase() +
-				"-" + createTid(4).toUpperCase() + "-" + createTid(16).toUpperCase();
+//		String tid = createTid(8).toUpperCase() + "-" + createTid(4).toUpperCase() + "-" + createTid(4).toUpperCase() +
+//				"-" + createTid(4).toUpperCase() + "-" + createTid(16).toUpperCase();
 		try {
+			
+			if (service.countByTid(param.get(0).getTid()) > 0) {
+				throw new ValidationException("동일한 TID 존재");
+			}
+			
 			WorkDailyReportDTO parent = null;
 			int dataseq = 0;
 			for (NotoperateContents notpercontent : param) {
@@ -154,8 +159,6 @@ public class NotoperateContentsController {
 			}
 
 			int result = service.create(param, dataseq);
-
-
 
 			// 알람 보낼 공장 체크
 			if (!alarmService.plantCheck(param.get(0).getPlant())) {
