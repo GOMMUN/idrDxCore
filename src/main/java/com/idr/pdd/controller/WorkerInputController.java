@@ -116,18 +116,14 @@ public class WorkerInputController {
 		Message message = new Message();
 		HttpHeaders headers = new HttpHeaders();
 		
-		int result = 0;
-		
 		try {
-			int dataseq = 0;
-			
 			if (service.countByTid(params.get(0).getTid()) > 0) {
 				throw new ValidationException("동일한 TID 존재");
 			}
 			
-			result = service.create(params);
+			int result = service.create(params);
 			
-			jobexechistService.create(params.get(dataseq).getTid(), "Complited",
+			jobexechistService.create(params.get(0).getTid(), "Complited",
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
 			jobexechistService.save(params.get(0).getTid(), "Complited",
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);

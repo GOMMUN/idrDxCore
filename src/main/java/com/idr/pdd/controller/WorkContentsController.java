@@ -3,6 +3,7 @@ package com.idr.pdd.controller;
 import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -59,182 +60,142 @@ public class WorkContentsController {
 	private WorkContentsService service;
 
 	@Autowired
-	private AlarmService alarmService;
+	private AlarmService alarmService; 
 
 	@Autowired
 	private JobexechistService jobexechistService;
+
+//	@ResponseBody
+//	@PostMapping("/")
+//	@Operation(summary = "등록", description = "작업내용을 신규 등록합니다.", responses = {
+//			@ApiResponse(responseCode = "200", description = "OK"),
+//			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
+//	public ResponseEntity<Message> create(@RequestBody WorkContents param) {
+//
+//		Message message = new Message();
+//		HttpHeaders headers = new HttpHeaders();
+//
+//		try {
+//			int dataseq = 0;
+//
+//			if (!CheckUtils.isValidation(param)) {
+//				throw new ValidationException("필수값 입력해주세요.");
+//			}
+//
+//			if (service.countByTid(param.getTid()) > 0) {
+//				throw new ValidationException("동일한 TID 존재");
+//			}
+//
+//			WorkDailyReportDTO parent = pservice.find(param);
+//
+//			if (parent == null) {
+//				throw new ValidationException("작업일보가 존재하지 않습니다.");
+//			}
+//
+//			dataseq = parent.getDataseq();
+//
+//			if (dataseq == 0) {
+//				throw new ValidationException("작업일보가 존재하지 않습니다.");
+//			}
+//
+//			int result = service.create(param, dataseq);
+//
+//			jobexechistService.create(param.getTid(), "Create",
+//					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//			jobexechistService.save(param.getTid(), "Create",
+//					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//
+//			// 알람 보낼 공장 체크
+//			if (!alarmService.plantCheck(param.getPlant())) {
+//				alarmService.occur(parent, param);
+//
+//				jobexechistService.create(param.getTid(), "Send",
+//						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//				jobexechistService.save(param.getTid(), "Send",
+//						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//			} else {
+//				alarmService.notice(parent, param);
+//
+//				jobexechistService.create(param.getTid(), "Send",
+//						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//				jobexechistService.save(param.getTid(), "Send",
+//						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//			}
+//
+//			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//
+//			message.setStatus(StatusEnum.OK.getCode());
+//			message.setMessage(StatusEnum.OK.getName());
+//			message.setData(result);
+//
+//			jobexechistService.create(param.getTid(), "Complited",
+//					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//			jobexechistService.save(param.getTid(), "Complited",
+//					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//
+//			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//		} catch (Exception e) {
+//
+//			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+//			message.setMessage(e.getMessage());
+//			message.setData(null);
+//
+//			jobexechistService.create(param.getTid(), "Fail",
+//					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//			jobexechistService.save(param.getTid(), "Fail",
+//					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
+//
+//			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+//		}
+//	}
 
 	@ResponseBody
 	@PostMapping("/")
 	@Operation(summary = "등록", description = "작업내용을 신규 등록합니다.", responses = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
-	public ResponseEntity<Message> create(@RequestBody WorkContents param) {
+	public ResponseEntity<Message> creates(@RequestBody List<WorkContents> params) {
 
 		Message message = new Message();
 		HttpHeaders headers = new HttpHeaders();
 
 		try {
-			int dataseq = 0;
-
-			if (!CheckUtils.isValidation(param)) {
-				throw new ValidationException("필수값 입력해주세요.");
+			
+			for (WorkContents param : params) {
+				if(!params.get(0).getTid().equals(param.getTid())) {
+					throw new ValidationException("호출시 동일한 TID 호출");
+				}
 			}
-
-			if (service.countByTid(param.getTid()) > 0) {
+			
+			if (service.countByTid(params.get(0).getTid()) > 0) {
 				throw new ValidationException("동일한 TID 존재");
 			}
-
-			WorkDailyReportDTO parent = pservice.find(param);
-
-			if (parent == null) {
-				throw new ValidationException("작업일보가 존재하지 않습니다.");
-			}
-
-			dataseq = parent.getDataseq();
-
-			if (dataseq == 0) {
-				throw new ValidationException("작업일보가 존재하지 않습니다.");
-			}
-
-			int result = service.create(param, dataseq);
-
-			jobexechistService.create(param.getTid(), "Create",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			jobexechistService.save(param.getTid(), "Create",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-
-			// 알람 보낼 공장 체크
-			if (!alarmService.plantCheck(param.getPlant())) {
-				alarmService.occur(parent, param);
-
-				jobexechistService.create(param.getTid(), "Send",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-				jobexechistService.save(param.getTid(), "Send",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			} else {
-				alarmService.notice(parent, param);
-
-				jobexechistService.create(param.getTid(), "Send",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-				jobexechistService.save(param.getTid(), "Send",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			}
-
+			
+			int result = service.create(params);
+			
+			jobexechistService.create(params.get(0).getTid(), "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			jobexechistService.save(params.get(0).getTid(), "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
 			message.setStatus(StatusEnum.OK.getCode());
 			message.setMessage(StatusEnum.OK.getName());
 			message.setData(result);
 
-			jobexechistService.create(param.getTid(), "Complited",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			jobexechistService.save(param.getTid(), "Complited",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-
 			return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		} catch (Exception e) {
+
+			jobexechistService.create(params.get(0).getTid(), "Failed",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			jobexechistService.save(params.get(0).getTid(), "Failed",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
 
 			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
 			message.setMessage(e.getMessage());
 			message.setData(null);
 
-			jobexechistService.create(param.getTid(), "Fail",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			jobexechistService.save(param.getTid(), "Fail",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-
-			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@ResponseBody
-	@PostMapping("/array")
-	@Operation(summary = "등록", description = "작업내용을 신규 등록합니다.", responses = {
-			@ApiResponse(responseCode = "200", description = "OK"),
-			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
-	public ResponseEntity<Message> creates(@RequestBody List<WorkContents> param) {
-
-		Message message = new Message();
-		HttpHeaders headers = new HttpHeaders();
-		String tid = createTid(8).toUpperCase() + "-" + createTid(4).toUpperCase() + "-" + createTid(4).toUpperCase()
-				+ "-" + createTid(4).toUpperCase() + "-" + createTid(16).toUpperCase();
-		try {
-			WorkDailyReportDTO parent = null;
-			int dataseq = 0;
-			for (WorkContents workcontents : param) {
-				if (!CheckUtils.isValidation(workcontents)) {
-					throw new ValidationException("필수값 입력해주세요.");
-				}
-
-				if (service.countByTid(workcontents.getTid()) > 0) {
-					throw new ValidationException("동일한 TID 존재");
-				}
-
-				parent = pservice.find(workcontents);
-
-				if (parent == null) {
-					throw new ValidationException("작업일보가 존재하지 않습니다.");
-				}
-
-				dataseq = parent.getDataseq();
-
-				if (dataseq == 0) {
-					throw new ValidationException("작업일보가 존재하지 않습니다.");
-				}
-			}
-
-			int result = service.create(param, dataseq);
-
-			for (WorkContents workcontents : param) {
-				jobexechistService.create(workcontents.getTid(), "Create",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-				jobexechistService.save(workcontents.getTid(), "Create",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			}
-			// 알람 보낼 공장 체크
-			if (!alarmService.plantCheck(param.get(0).getPlant())) {
-				alarmService.occur(parent, param, tid);
-
-				jobexechistService.create(tid, "Send",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-				jobexechistService.save(tid, "Send",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			} else {
-				alarmService.notice(parent, param, tid);
-
-				jobexechistService.create(tid, "Send",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-				jobexechistService.save(tid, "Send",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			}
-
-			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-			message.setStatus(StatusEnum.OK.getCode());
-			message.setMessage(StatusEnum.OK.getName());
-			message.setData(result);
-
-			for (WorkContents workcontents : param) {
-				jobexechistService.create(workcontents.getTid(), "Complited",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-				jobexechistService.save(workcontents.getTid(), "Complited",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			}
-
-			return new ResponseEntity<>(message, headers, HttpStatus.OK);
-		} catch (Exception e) {
-
-			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
-			message.setMessage(e.getMessage());
-			message.setData(null);
-
-			for (WorkContents workcontents : param) {
-			jobexechistService.create(workcontents.getTid(), "Fail",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			jobexechistService.save(workcontents.getTid(), "Fail",
-					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-DD HH:mm:SS")), null);
-			}
 			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
 			
 		}

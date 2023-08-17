@@ -141,7 +141,7 @@ public class WorkDailyReportService{
 		return mapper.count(result);
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor = {Exception.class})
 	public int create(List<WorkDailyReport> params) throws Exception {
 
 		int result = 0;

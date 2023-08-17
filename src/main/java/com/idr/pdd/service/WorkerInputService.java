@@ -8,8 +8,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.idr.pdd.vo.WorkDailyReport;
 import com.idr.pdd.vo.WorkerInput;
 
 import jakarta.xml.bind.ValidationException;
@@ -38,10 +36,10 @@ public class WorkerInputService{
 		return mapper.countByTid(tid);
 	}
 	
-	@Transactional
+	@Transactional(rollbackFor = {Exception.class})
 	public int create(List<WorkerInput> params) throws Exception {
 		
-		int result=0;
+		int result = 0;
 		
 		for(WorkerInput param : params) {
 			
@@ -57,11 +55,11 @@ public class WorkerInputService{
 				throw new ValidationException("작업일보가 존재하지 않습니다.");
 			}
 			
+			dataseq = parent.getDataseq();
+			
 			if (dataseq == 0) {
 				throw new ValidationException("작업일보가 존재하지 않습니다.");
 			}
-			
-			dataseq = parent.getDataseq();
 			
 			result += create(param,dataseq);
 			

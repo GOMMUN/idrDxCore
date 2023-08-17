@@ -84,9 +84,9 @@ public class AlarmController {
 			
 			// 알람 보낼 공장 체크
 			if(!alarmService.plantCheck(param.getPlant())) {
-				alarmService.occur(parent,param);
+				alarmService.occur(parent,param.getTid());
 			}else {
-				alarmService.notice(parent,param);
+				alarmService.notice(parent,param.getTid());
 			}
 			
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));

@@ -56,130 +56,99 @@ public class WorkerManhourController {
 	@Autowired
 	private JobexechistService jobexechistService;
 
+//	@ResponseBody
+//	@PostMapping("/")
+//	@Operation(summary = "등록", description = "공수투입현황을 신규 등록합니다.", responses = {
+//			@ApiResponse(responseCode = "200", description = "OK"),
+//			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
+//	public ResponseEntity<Message> create(@RequestBody WorkerManhour param) {
+//
+//		Message message = new Message();
+//		HttpHeaders headers = new HttpHeaders();
+//
+//		try {
+//			int dataseq = 0;
+//
+//			if (!CheckUtils.isValidation(param)) {
+//				throw new ValidationException("필수값 입력해주세요.");
+//			}
+//
+//			if (service.countByTid(param.getTid()) > 0) {
+//				throw new ValidationException("동일한 TID 존재");
+//			}
+//
+//			WorkDailyReportDTO parent = pservice.find(param);
+//
+//			if (parent == null) {
+//				throw new ValidationException("작업일보가 존재하지 않습니다.");
+//			}
+//
+//			dataseq = parent.getDataseq();
+//
+//			if (dataseq == 0) {
+//				throw new ValidationException("작업일보가 존재하지 않습니다.");
+//			}
+//
+//			int result = service.create(param, dataseq);
+//
+//			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//
+//			message.setStatus(StatusEnum.OK.getCode());
+//			message.setMessage(StatusEnum.OK.getName());
+//			message.setData(result);
+//
+//			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//		} catch (Exception e) {
+//
+//			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+//			message.setMessage(e.getMessage());
+//			message.setData(null);
+//
+//			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+//		}
+//	}
+
 	@ResponseBody
 	@PostMapping("/")
-	@Operation(summary = "등록", description = "공수투입현황을 신규 등록합니다.", responses = {
-			@ApiResponse(responseCode = "200", description = "OK"),
-			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
-	public ResponseEntity<Message> create(@RequestBody WorkerManhour param) {
-
-		Message message = new Message();
-		HttpHeaders headers = new HttpHeaders();
-
-		try {
-			int dataseq = 0;
-
-			if (!CheckUtils.isValidation(param)) {
-				throw new ValidationException("필수값 입력해주세요.");
-			}
-
-			if (service.countByTid(param.getTid()) > 0) {
-				throw new ValidationException("동일한 TID 존재");
-			}
-
-			WorkDailyReportDTO parent = pservice.find(param);
-
-			if (parent == null) {
-				throw new ValidationException("작업일보가 존재하지 않습니다.");
-			}
-
-			dataseq = parent.getDataseq();
-
-			if (dataseq == 0) {
-				throw new ValidationException("작업일보가 존재하지 않습니다.");
-			}
-
-			int result = service.create(param, dataseq);
-
-			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-			message.setStatus(StatusEnum.OK.getCode());
-			message.setMessage(StatusEnum.OK.getName());
-			message.setData(result);
-
-			return new ResponseEntity<>(message, headers, HttpStatus.OK);
-		} catch (Exception e) {
-
-			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
-			message.setMessage(e.getMessage());
-			message.setData(null);
-
-			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@Transactional
-	@ResponseBody
-	@PostMapping("/array")
 //	@Operation(summary = "등록array", description = "array공수투입현황을 신규 등록합니다.", responses = {
 	@Operation(summary = "등록", description = "공수투입현황을 신규 등록합니다.", responses = {
 			@ApiResponse(responseCode = "200", description = "OK"),
 			@ApiResponse(responseCode = "400", description = "BAD_REQUEST") })
-	public ResponseEntity<Message> created(@RequestBody List<WorkerManhour> param) {
+	public ResponseEntity<Message> created(@RequestBody List<WorkerManhour> params) {
 
 		Message message = new Message();
 		HttpHeaders headers = new HttpHeaders();
 
 		try {
-			int dataseq = 0;
-			
-			if (service.countByTid(param.get(0).getTid()) > 0) {
+			if (service.countByTid(params.get(0).getTid()) > 0) {
 				throw new ValidationException("동일한 TID 존재");
 			}
 
-			for (WorkerManhour wm : param) {
-				if (!CheckUtils.isValidation(wm)) {
-					throw new ValidationException("필수값 입력해주세요.");
-				}
+			int result = service.create(params);
+			
+			jobexechistService.create(params.get(0).getTid(), "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			jobexechistService.save(params.get(0).getTid(), "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
 
-				WorkDailyReportDTO parent = pservice.find(wm);
-
-				if (parent == null) {
-					throw new ValidationException("작업일보가 존재하지 않습니다.");
-				}
-
-				dataseq = parent.getDataseq();
-
-				if (dataseq == 0) {
-					throw new ValidationException("작업일보가 존재하지 않습니다.");
-				}
-			}
-
-			int result = service.create(param, dataseq);
-
-			for (WorkerManhour wm : param) {
-				jobexechistService.create(wm.getTid(), "Create",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-				jobexechistService.save(wm.getTid(), "Create",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-			}
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
 			message.setStatus(StatusEnum.OK.getCode());
 			message.setMessage(StatusEnum.OK.getName());
 			message.setData(result);
-			
-			for (WorkerManhour wm : param) {
-				jobexechistService.create(wm.getTid(), "Complited",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-				jobexechistService.save(wm.getTid(), "Complited",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-			}
 
 			return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		} catch (Exception e) {
+			
+			jobexechistService.create(params.get(0).getTid(), "Failed",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			jobexechistService.save(params.get(0).getTid(), "Failed",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
 
 			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
 			message.setMessage(e.getMessage());
 			message.setData(null);
 			
-			for (WorkerManhour wm : param) {
-				jobexechistService.create(wm.getTid(), "Failed",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-				jobexechistService.save(wm.getTid(), "Failed",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-			}
-
 			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
 		}
 	}

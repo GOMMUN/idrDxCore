@@ -62,113 +62,84 @@ public class NotoperateContentsController {
 	@Autowired
 	private AlarmService alarmService;
 	
-	@ResponseBody
-	@PostMapping("/")
-	@Operation(summary = "등록", description = "비가동내역을 신규 등록합니다.")
-	public ResponseEntity<Message> create(@RequestBody NotoperateContents param) {
-
-		Message message = new Message();
-		HttpHeaders headers = new HttpHeaders();
-
-		try {
-			int dataseq = 0;
-
-			if (!CheckUtils.isValidation(param)) {
-				throw new ValidationException("필수값 입력해주세요.");
-			}
-
-			if (service.countByTid(param.getTid()) > 0) {
-				throw new ValidationException("동일한 TID 존재");
-			}
-
-			WorkDailyReportDTO parent = pservice.find(param);
-
-			if (parent == null) {
-				throw new ValidationException("작업일보가 존재하지 않습니다.");
-			}
-
-			dataseq = parent.getDataseq();
-
-			if (dataseq == 0) {
-				throw new ValidationException("작업일보가 존재하지 않습니다.");
-			}
-
-			int result = service.create(param, dataseq);
-
-			// 알람 보낼 공장 체크
-			if (!alarmService.plantCheck(param.getPlant())) {
-				alarmService.occur(parent, param);
-			} else {
-				alarmService.notice(parent, param);
-			}
-
-			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-			message.setStatus(StatusEnum.OK.getCode());
-			message.setMessage(StatusEnum.OK.getName());
-			message.setData(result);
-
-			return new ResponseEntity<>(message, headers, HttpStatus.OK);
-		} catch (Exception e) {
-
-			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
-			message.setMessage(e.getMessage());
-			message.setData(null);
-
-			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
-		}
-	}
+//	@ResponseBody
+//	@PostMapping("/")
+//	@Operation(summary = "등록", description = "비가동내역을 신규 등록합니다.")
+//	public ResponseEntity<Message> create(@RequestBody NotoperateContents param) {
+//
+//		Message message = new Message();
+//		HttpHeaders headers = new HttpHeaders();
+//
+//		try {
+//			int dataseq = 0;
+//
+//			if (!CheckUtils.isValidation(param)) {
+//				throw new ValidationException("필수값 입력해주세요.");
+//			}
+//
+//			if (service.countByTid(param.getTid()) > 0) {
+//				throw new ValidationException("동일한 TID 존재");
+//			}
+//
+//			WorkDailyReportDTO parent = pservice.find(param);
+//
+//			if (parent == null) {
+//				throw new ValidationException("작업일보가 존재하지 않습니다.");
+//			}
+//
+//			dataseq = parent.getDataseq();
+//
+//			if (dataseq == 0) {
+//				throw new ValidationException("작업일보가 존재하지 않습니다.");
+//			}
+//
+//			int result = service.create(param, dataseq);
+//
+//			// 알람 보낼 공장 체크
+//			if (!alarmService.plantCheck(param.getPlant())) {
+//				alarmService.occur(parent, param);
+//			} else {
+//				alarmService.notice(parent, param);
+//			}
+//
+//			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//
+//			message.setStatus(StatusEnum.OK.getCode());
+//			message.setMessage(StatusEnum.OK.getName());
+//			message.setData(result);
+//
+//			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//		} catch (Exception e) {
+//
+//			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+//			message.setMessage(e.getMessage());
+//			message.setData(null);
+//
+//			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+//		}
+//	}
 	
 	@ResponseBody
-	@PostMapping("/array")
+	@PostMapping("/")
 	@Operation(summary = "등록array", description = "array비가동내역을 신규 등록합니다.")
-	public ResponseEntity<Message> creates(@RequestBody List<NotoperateContents> param) {
+	public ResponseEntity<Message> creates(@RequestBody List<NotoperateContents> params) {
 
 		Message message = new Message();
 		HttpHeaders headers = new HttpHeaders();
-//		String tid = createTid(8).toUpperCase() + "-" + createTid(4).toUpperCase() + "-" + createTid(4).toUpperCase() +
-//				"-" + createTid(4).toUpperCase() + "-" + createTid(16).toUpperCase();
+		
 		try {
 			
-			if (service.countByTid(param.get(0).getTid()) > 0) {
+			for (NotoperateContents param : params) {
+				if(!params.get(0).getTid().equals(param.getTid())) {
+					throw new ValidationException("호출시 동일한 TID 호출");
+				}
+			}
+			
+			if (service.countByTid(params.get(0).getTid()) > 0) {
 				throw new ValidationException("동일한 TID 존재");
 			}
 			
-			WorkDailyReportDTO parent = null;
-			int dataseq = 0;
-			for (NotoperateContents notpercontent : param) {
-				if (!CheckUtils.isValidation(notpercontent)) {
-					throw new ValidationException("필수값 입력해주세요.");
-				}
-
-				if (service.countByTid(notpercontent.getTid()) > 0) {
-					throw new ValidationException("동일한 TID 존재");
-				}
-
-				parent = pservice.find(notpercontent);
-
-				if (parent == null) {
-					throw new ValidationException("작업일보가 존재하지 않습니다.");
-				}
-
-				dataseq = parent.getDataseq();
-
-				if (dataseq == 0) {
-					throw new ValidationException("작업일보가 존재하지 않습니다.");
-				}
-			}
-
-			int result = service.create(param, dataseq);
-
-			// 알람 보낼 공장 체크
-			if (!alarmService.plantCheck(param.get(0).getPlant())) {
-				alarmService.occur(parent, param);
-
-			} else {
-				alarmService.notice(parent, param);
-
-				
-			}
+			int result = service.create(params);
 
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
