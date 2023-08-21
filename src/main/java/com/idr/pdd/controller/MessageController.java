@@ -77,7 +77,7 @@ public class MessageController {
 
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-			String botId = "RXNW84AM9BC7KDK8";
+			String botId = BotId.UNDER_PRODUCTION_MAIN.getBot();
 //        	String botId = BotId.UNDER_PRODUCTION_MAIN.name();
 			String botToken = SendBlockit.BlockitToken(botId);
 
@@ -172,7 +172,7 @@ public class MessageController {
 
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-			String botId = "RXNW84AM9BC7KDK8";
+			String botId = BotId.DEFECT_RATE_MAIN.getBot();
 			String botToken = SendBlockit.BlockitToken(botId);
 
 			if (botToken == null) {
@@ -263,7 +263,7 @@ public class MessageController {
 
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
-			String botId = "RXNW84AM9BC7KDK8";
+			String botId = BotId.NOTOPERATE_PRESS_MAIN.getBot();
 //        	String botId = BotId.UNDER_PRODUCTION_MAIN.name();
 			String botToken = SendBlockit.BlockitToken(botId);
 

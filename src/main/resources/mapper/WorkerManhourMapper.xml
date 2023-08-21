@@ -10,6 +10,7 @@
 		 FROM DSP_WORKER_MANHOUR
 		WHERE ISUSABLE IS NOT NULL
 		AND TID = #{tid}
+		AND ISUSABLE = 'Usable'
     </select>
     
     <insert id="create" parameterType="WorkerManhourDTO" >

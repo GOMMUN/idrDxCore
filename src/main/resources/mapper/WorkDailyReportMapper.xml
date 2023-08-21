@@ -10,6 +10,7 @@
 		 FROM DSP_WORKDAILY_REPORT
 		WHERE ISUSABLE IS NOT NULL
 		AND TID = #{tid}
+		AND ISUSABLE = 'Usable'
     </select>
     
     <select id="findDataseqPlanQty" parameterType="WorkDailyReportDTO" resultType="WorkDailyReportDTO">
@@ -21,6 +22,7 @@
 		AND SHIFTID = #{shiftid}
 		AND MATERIALID = #{materialid}
 		AND MODELID = #{modelid}
+		AND ISUSABLE = 'Usable'
     </select>
     
     <select id="find" parameterType="WorkDailyReportDTO" resultType="WorkDailyReportDTO">
@@ -50,6 +52,7 @@
 		AND SHIFTID = #{shiftid}
 		AND MODELID = #{modelid}
 		AND MATERIALID = #{materialid}
+		AND ISUSABLE = 'Usable'
     </select>
     
     <select id="countByTid" parameterType="String" resultType="Integer">
@@ -57,6 +60,7 @@
 		 FROM DSP_WORKDAILY_REPORT
 		WHERE ISUSABLE IS NOT NULL
 		AND TID = #{tid}
+		AND ISUSABLE = 'Usable'
     </select>
     
     <select id="count" parameterType="WorkDailyReportDTO" resultType="Integer">
@@ -69,6 +73,7 @@
 		AND SHIFTID = #{shiftid}
 		AND MODELID = #{modelid}
 		AND MATERIALID = #{materialid}
+		AND ISUSABLE = 'Usable'
     </select>
     
     <insert id="create" parameterType="WorkDailyReportDTO" >

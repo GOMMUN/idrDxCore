@@ -10,6 +10,7 @@
 		 FROM DSP_WORKER_INPUT
 		WHERE ISUSABLE IS NOT NULL
 		AND TID = #{tid}
+		AND ISUSABLE = 'Usable'
     </select>
     
     <select id="countByWorker" parameterType="WorkerInputDTO" resultType="Integer">
@@ -18,6 +19,7 @@
 		WHERE ISUSABLE IS NOT NULL
 		AND PERSONID = #{personid}
 		AND WORKDAILY_SEQ = #{workdailySeq}
+		AND ISUSABLE = 'Usable'
     </select>
     
     <insert id="create" parameterType="WorkerInputDTO" >
