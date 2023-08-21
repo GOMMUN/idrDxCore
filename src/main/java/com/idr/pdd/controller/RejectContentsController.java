@@ -118,70 +118,47 @@ public class RejectContentsController {
 	@PostMapping("/")
 	@Operation(summary = "등록", description = "비가동내역을 신규 등록합니다.")
 //	@Operation(summary = "등록array", description = "array비가동내역을 신규 등록합니다.")
-	public ResponseEntity<Message> creates(@RequestBody List<RejectContents> param) {
+	public ResponseEntity<Message> creates(@RequestBody List<RejectContents> params) {
 
 		Message message = new Message();
 		HttpHeaders headers = new HttpHeaders();
 
 		try {
-			int dataseq = 0;
 			
-			if (service.countByTid(param.get(0).getTid()) > 0) {
+			for (RejectContents param : params) {
+				if(!params.get(0).getTid().equals(param.getTid())) {
+					throw new ValidationException("파라미터의 TID가 동일하지 않습니다.");
+				}
+			}
+			
+			if (service.countByTid(params.get(0).getTid()) > 0) {
 				throw new ValidationException("동일한 TID 존재");
 			}
-
-			for (RejectContents rc : param) {
-				if (!CheckUtils.isValidation(rc)) {
-					throw new ValidationException("필수값 입력해주세요.");
-				}
-
-				WorkDailyReportDTO parent = pservice.find(rc);
-
-				if (parent == null) {
-					throw new ValidationException("작업일보가 존재하지 않습니다.");
-				}
-
-				dataseq = parent.getDataseq();
-
-				if (dataseq == 0) {
-					throw new ValidationException("작업일보가 존재하지 않습니다.");
-				}
-			}
-
-			int result = service.create(param, dataseq);
-
-			for (RejectContents rc : param) {
-				jobexechistService.create(rc.getTid(), "Create",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-				jobexechistService.save(rc.getTid(), "Create",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-			}
+			
+			int result = service.create(params);
+			
+			jobexechistService.create(params.get(0).getTid(), "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			jobexechistService.save(params.get(0).getTid(), "Complited",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 
 			message.setStatus(StatusEnum.OK.getCode());
 			message.setMessage(StatusEnum.OK.getName());
 			message.setData(result);
 
-			for (RejectContents rc : param) {
-				jobexechistService.create(rc.getTid(), "Complited",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-				jobexechistService.save(rc.getTid(), "Complited",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-			}
-
 			return new ResponseEntity<>(message, headers, HttpStatus.OK);
 		} catch (Exception e) {
 
+			jobexechistService.create(params.get(0).getTid(), "Failed",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			jobexechistService.save(params.get(0).getTid(), "Failed",
+					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
+			
 			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
 			message.setMessage(e.getMessage());
 			message.setData(null);
-
-			for (RejectContents rc : param) {
-				jobexechistService.create(rc.getTid(), "Failed",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-				jobexechistService.save(rc.getTid(), "Failed",
-						LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
-			}
 
 			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
 		}

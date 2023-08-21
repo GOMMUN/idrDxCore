@@ -25,6 +25,7 @@ import com.idr.pdd.common.CheckUtils;
 import com.idr.pdd.dto.WorkDailyReportDTO;
 import com.idr.pdd.service.JobexechistService;
 import com.idr.pdd.service.WorkDailyReportService;
+import com.idr.pdd.vo.WorkContents;
 import com.idr.pdd.vo.WorkDailyReport;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -121,6 +122,13 @@ public class WorkDailyReportController {
 		HttpHeaders headers = new HttpHeaders();
 		
 		try {
+			
+			for (WorkDailyReport param : params) {
+				if(!params.get(0).getTid().equals(param.getTid())) {
+					throw new ValidationException("파라미터의 TID가 동일하지 않습니다.");
+				}
+			}
+			
 			if (service.countByTid(params.get(0).getTid()) > 0) {
 				throw new ValidationException("동일한 TID 존재");
 			}

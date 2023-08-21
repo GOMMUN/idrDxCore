@@ -117,6 +117,13 @@ public class WorkerInputController {
 		HttpHeaders headers = new HttpHeaders();
 		
 		try {
+			
+			for (WorkerInput param : params) {
+				if(!params.get(0).getTid().equals(param.getTid())) {
+					throw new ValidationException("파라미터의 TID가 동일하지 않습니다.");
+				}
+			}
+			
 			if (service.countByTid(params.get(0).getTid()) > 0) {
 				throw new ValidationException("동일한 TID 존재");
 			}

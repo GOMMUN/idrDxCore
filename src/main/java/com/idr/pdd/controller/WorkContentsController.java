@@ -163,7 +163,7 @@ public class WorkContentsController {
 			
 			for (WorkContents param : params) {
 				if(!params.get(0).getTid().equals(param.getTid())) {
-					throw new ValidationException("호출시 동일한 TID 호출");
+					throw new ValidationException("파라미터의 TID가 동일하지 않습니다.");
 				}
 			}
 			

@@ -12,6 +12,14 @@
 		AND TID = #{tid}
     </select>
     
+    <select id="countByWorker" parameterType="WorkerInputDTO" resultType="Integer">
+        SELECT COUNT(PERSONID)
+		 FROM DSP_WORKER_INPUT
+		WHERE ISUSABLE IS NOT NULL
+		AND PERSONID = #{personid}
+		AND WORKDAILY_SEQ = #{workdailySeq}
+    </select>
+    
     <insert id="create" parameterType="WorkerInputDTO" >
         INSERT INTO DSP_WORKER_INPUT (
         	PERSONID, 

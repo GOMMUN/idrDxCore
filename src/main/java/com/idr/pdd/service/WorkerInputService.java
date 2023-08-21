@@ -91,6 +91,13 @@ public class WorkerInputService{
 										.tid(param.getTid())
 										.workdailySeq(dataseq)
 										.build();
+		
+		int count = mapper.countByWorker(result);
+		
+		if(count > 0) {
+			throw new ValidationException("동일한 작업자가 존재합니다.");
+		}
+		
 		return mapper.create(result);
 	}
 	
