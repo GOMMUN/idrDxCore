@@ -40,8 +40,8 @@
         	TID, 
         	WORKDAILY_SEQ
         ) VALUES(
-        	  CONCAT(REPLACE(#{worktimeFrom},':',''),'00')
-			, CONCAT(REPLACE(#{worktimeTo},':',''),'00')
+        	  #{worktimeFrom}
+			, #{worktimeTo}
             , #{manhour}
         	, #{prodQty}
             , #{firsttimeGoodQty}

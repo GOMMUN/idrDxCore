@@ -23,8 +23,8 @@
         	TID, 
         	WORKDAILY_SEQ
         ) VALUES(
-        	  CONCAT(REPLACE(#{notoperatetimeFrom},':',''),'00')
-			, CONCAT(REPLACE(#{notoperatetimeTo},':',''),'00')
+        	  #{notoperatetimeFrom}
+			, #{notoperatetimeTo}
         	, #{hands}
             , #{manhour}
             , #{cause}
