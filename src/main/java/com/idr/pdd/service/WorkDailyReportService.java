@@ -177,6 +177,7 @@ public class WorkDailyReportService{
 										.planQty(param.getPlanqty())
 										.register(param.getRegister())
 										.notes(param.getNotes())
+										.creator(param.getRegister())
 										.tid(param.getTid())
 										.build();
 		return mapper.create(result);

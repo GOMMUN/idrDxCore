@@ -87,6 +87,7 @@
              , REGISTER
              , PLAN_QTY
              , NOTES
+             , CREATOR
              , TID
         )
         VALUES (
@@ -98,7 +99,7 @@
              , #{materialid}
              , #{register}
              , #{planQty}
-             ,#{notes}
+             , #{notes}
              , #{tid}
         )
     </insert>
