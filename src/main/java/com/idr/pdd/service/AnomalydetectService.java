@@ -63,6 +63,7 @@ public class AnomalydetectService{
 			AnomalydetectConfirmDTO data = AnomalydetectConfirmDTO.builder()
 					.factoryid(param.getFactory())
 					.confirmid(param.getMessengerid())
+					.confirmReason(param.getMessengerReason())
 					.tid(param.getMessengerid()).build();
 			
 			result = confirmMapper.create(data);

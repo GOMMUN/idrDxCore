@@ -20,6 +20,7 @@
         	CONFIRM_DATETIME, 
         	CONFIRM_UPDATOR, 
         	CONFIRM_TARGET,
+        	CONFIRM_REASON,
         	TID
         ) VALUES(
         	#{factoryid}
@@ -27,6 +28,7 @@
         	, GETDATE()
         	, #{confirmUpdator}
             , #{confirmTarget}
+            , #{confirmReason}
             , #{tid}
         )
     </insert>
