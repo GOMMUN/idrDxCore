@@ -52,6 +52,7 @@ public class WorkContentsService{
 										.reworkFailQty(param.getReworkfailqty())
 										.tid(param.getTid())
 										.workdailySeq(dataseq)
+										.notes(param.getNotes())
 										.build();
 		return mapper.create(result);
 	}
