@@ -18,7 +18,7 @@
 		 FROM DSP_ANOMALYDETECT_CONFIRM
 		WHERE ISUSABLE IS NOT NULL
 		AND TID = #{tid}
-		AND CONFIRM_REASON = #{occurReason}
+		AND CONFIRM_REASON = #{confirmReason}
 		AND ISUSABLE = 'Usable'
     </select>
     
