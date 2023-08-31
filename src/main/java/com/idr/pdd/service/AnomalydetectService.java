@@ -34,6 +34,43 @@ public class AnomalydetectService{
 		return occurMapper.countByTid(tid);
 	}
 	
+	public int count(Anomalydetect param) throws Exception {
+		
+		int result = 0;
+		
+		if("OCCUR".equals(param.getMessengerState())) {
+			
+			AnomalydetectOccurDTO data = AnomalydetectOccurDTO.builder()
+				.factoryid(param.getFactory())
+				.occurid(param.getMessengerid())
+				.occurReason(param.getMessengerReason())
+				.occurReasondescRiption(param.getMessengerReasondescription())
+				.tid(param.getMessengerid()).build();
+			
+			result = occurMapper.count(data);
+		}else if("NOTICE".equals(param.getMessengerState())) {
+			
+			AnomalydetectNoticeDTO data = AnomalydetectNoticeDTO.builder()
+					.factoryid(param.getFactory())
+					.noticeid(param.getMessengerid())
+					.noticeReason(param.getMessengerReason())
+					.noticeReasondescRiption(param.getMessengerReasondescription())
+					.tid(param.getMessengerid()).build();
+			
+			result = noticeMapper.count(data);
+		}else if("CONFIRM".equals(param.getMessengerState())) {
+			AnomalydetectConfirmDTO data = AnomalydetectConfirmDTO.builder()
+					.factoryid(param.getFactory())
+					.confirmid(param.getMessengerid())
+					.confirmReason(param.getMessengerReason())
+					.tid(param.getMessengerid()).build();
+			
+			result = confirmMapper.count(data);
+		}
+		
+		return result;
+	}
+	
 	@Transactional
 	public int create(Anomalydetect param) throws Exception {
 		

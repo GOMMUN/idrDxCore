@@ -84,7 +84,6 @@ public class MessageController {
 			if (botToken == null) {
 				throw new MessageSendException();
 			} else {
-				SendBlockit.BlockitMesaageSend(botId, botToken, messageParam);
 
 				// 이상감지 알람 테이블에 INSERT
 				Anomalydetect anomalydetect = new Anomalydetect();
@@ -94,8 +93,13 @@ public class MessageController {
 				anomalydetect.setMessengerReason("UNDER-PRODUCTION");
 				anomalydetect.setMessengerReasondescription("생산계획 대비 생산량 부족");
 				anomalydetect.setMessengerState("NOTICE");
-
-				service.create(anomalydetect);
+				
+				if(service.count(anomalydetect) > 0) {
+					throw new MessageSendException("동일한 알람 내역 존재");
+				}else {
+					SendBlockit.BlockitMesaageSend(botId, botToken, messageParam);
+					service.create(anomalydetect);
+				}
 			}
 
 			message.setStatus(StatusEnum.OK.getCode());
@@ -130,8 +134,12 @@ public class MessageController {
 			anomalydetect.setMessengerReason("UNDER-PRODUCTION");
 			anomalydetect.setMessengerReasondescription("생산계획 대비 생산량 부족");
 			anomalydetect.setMessengerState("CONFIRM");
-
-			service.create(anomalydetect);
+			
+			if(service.count(anomalydetect) > 0) {
+				throw new MessageSendException("동일한 알람 내역 존재");
+			}else {
+				service.create(anomalydetect);
+			}
 
 			message.setStatus(StatusEnum.OK.getCode());
 			message.setMessage(StatusEnum.OK.getName());
@@ -178,8 +186,6 @@ public class MessageController {
 			if (botToken == null) {
 				throw new MessageSendException();
 			} else {
-				SendBlockit.BlockitMesaageSend(botId, botToken, messageParam);
-
 				// 이상감지 알람 테이블에 INSERT
 				Anomalydetect anomalydetect = new Anomalydetect();
 
@@ -188,8 +194,13 @@ public class MessageController {
 				anomalydetect.setMessengerReason("DEFECT-RATE");
 				anomalydetect.setMessengerReasondescription("불량율 알림");
 				anomalydetect.setMessengerState("NOTICE");
-
-				service.create(anomalydetect);
+				
+				if(service.count(anomalydetect) > 0) {
+					throw new MessageSendException("동일한 알람 내역 존재");
+				}else {
+					SendBlockit.BlockitMesaageSend(botId, botToken, messageParam);
+					service.create(anomalydetect);
+				}
 			}
 
 			message.setStatus(StatusEnum.OK.getCode());
@@ -224,7 +235,11 @@ public class MessageController {
 			anomalydetect.setMessengerReasondescription("불량율 알림");
 			anomalydetect.setMessengerState("CONFIRM");
 
-			service.create(anomalydetect);
+			if(service.count(anomalydetect) > 0) {
+				throw new MessageSendException("동일한 알람 내역 존재");
+			}else {
+				service.create(anomalydetect);
+			}
 
 			message.setStatus(StatusEnum.OK.getCode());
 			message.setMessage(StatusEnum.OK.getName());
@@ -270,8 +285,6 @@ public class MessageController {
 			if (botToken == null) {
 				throw new MessageSendException();
 			} else {
-				SendBlockit.BlockitMesaageSend(botId, botToken, messageParam);
-
 				// 이상감지 알람 테이블에 INSERT
 				Anomalydetect anomalydetect = new Anomalydetect();
 
@@ -280,8 +293,13 @@ public class MessageController {
 				anomalydetect.setMessengerReason("NOTOPERATE-PRESS");
 				anomalydetect.setMessengerReasondescription("프레스 설비 작동 이상");
 				anomalydetect.setMessengerState("NOTICE");
-
-				service.create(anomalydetect);
+				
+				if(service.count(anomalydetect) > 0) {
+					throw new MessageSendException("동일한 알람 내역 존재");
+				}else {
+					SendBlockit.BlockitMesaageSend(botId, botToken, messageParam);
+					service.create(anomalydetect);
+				}
 			}
 
 			message.setStatus(StatusEnum.OK.getCode());
@@ -317,7 +335,11 @@ public class MessageController {
 			anomalydetect.setMessengerReasondescription("프레스 설비 작동 이상");
 			anomalydetect.setMessengerState("CONFIRM");
 
-			service.create(anomalydetect);
+			if(service.count(anomalydetect) > 0) {
+				throw new MessageSendException("동일한 알람 내역 존재");
+			}else {
+				service.create(anomalydetect);
+			}
 
 			message.setStatus(StatusEnum.OK.getCode());
 			message.setMessage(StatusEnum.OK.getName());

@@ -13,6 +13,15 @@
 		AND ISUSABLE = 'Usable'
     </select>
     
+    <select id="count" parameterType="AnomalydetectNoticeDTO" resultType="Integer">
+        SELECT COUNT(*)
+		 FROM DSP_ANOMALYDETECT_NOTICE
+		WHERE ISUSABLE IS NOT NULL
+		AND TID = #{tid}
+		AND NOTICE_REASON = #{noticeReason}
+		AND ISUSABLE = 'Usable'
+    </select>
+    
     <insert id="create" parameterType="AnomalydetectNoticeDTO">
         INSERT INTO DSP_ANOMALYDETECT_NOTICE (
         	FACTORYID,

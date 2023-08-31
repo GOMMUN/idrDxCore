@@ -9,5 +9,7 @@ public interface AnomalydetectOccurMapper {
 
 	int countByTid(String tid) throws Exception;
 	
+	int count(AnomalydetectOccurDTO param) throws Exception;
+	
 	int create(AnomalydetectOccurDTO param) throws Exception;
 }

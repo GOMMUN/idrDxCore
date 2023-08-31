@@ -127,10 +127,14 @@ public class AlarmService {
 				// 이상감지 알람 테이블에 INSERT
 				Anomalydetect anomalydetect = new Anomalydetect();
 
-				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid)
+				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
 						.occurReason(UNDER_PRODUCTION).occurReasondescRiption("생산계획 대비 생산량 부족").build();
-
-				occurMapper.create(dto);
+				
+				if(occurMapper.count(dto) > 0) {
+					throw new MessageSendException("동일한 알람 내역 존재");
+				}else {
+					occurMapper.create(dto);
+				}
 			}
 		}
 
@@ -180,10 +184,14 @@ public class AlarmService {
 				SendBlockit.BlockitMesaageSend(botId, botToken, message);
 
 				// 이상감지 알람 테이블에 INSERT
-				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid)
+				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
 						.occurReason(DEFECT_RATE).occurReasondescRiption("불량율 알림").build();
 
-				occurMapper.create(dto);
+				if(occurMapper.count(dto) > 0) {
+					throw new MessageSendException("동일한 알람 내역 존재");
+				}else {
+					occurMapper.create(dto);
+				}
 
 			}
 		}
@@ -231,10 +239,14 @@ public class AlarmService {
 			// 이상감지 알람 테이블에 INSERT
 			Anomalydetect anomalydetect = new Anomalydetect();
 
-			AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid)
+			AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
 					.occurReason(NOTOPERATE_PRESS).occurReasondescRiption("프레스 설비 작동 이상").build();
 
-			occurMapper.create(dto);
+			if(occurMapper.count(dto) > 0) {
+				throw new MessageSendException("동일한 알람 내역 존재");
+			}else {
+				occurMapper.create(dto);
+			}
 		}
 
 	}	
@@ -290,10 +302,14 @@ public class AlarmService {
 				SendBlockit.BlockitMesaageSend(botId, botToken, message);
 
 				// 이상감지 알람 테이블에 INSERT
-				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid)
+				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
 						.noticeReason(UNDER_PRODUCTION).noticeReasondescRiption("생산계획 대비 생산량 부족").build();
 
-				noticeMapper.create(dto);
+				if(noticeMapper.count(dto) > 0) {
+					throw new MessageSendException("동일한 알람 내역 존재");
+				}else {
+					noticeMapper.create(dto);
+				}
 			}
 		}
 
@@ -342,10 +358,14 @@ public class AlarmService {
 				SendBlockit.BlockitMesaageSend(botId, botToken, message);
 
 				// 이상감지 알람 테이블에 INSERT
-				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid)
+				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
 						.noticeReason(DEFECT_RATE).noticeReasondescRiption("불량율 알림").build();
 
-				noticeMapper.create(dto);
+				if(noticeMapper.count(dto) > 0) {
+					throw new MessageSendException("동일한 알람 내역 존재");
+				}else {
+					noticeMapper.create(dto);
+				}
 			}
 		}
 	}
@@ -385,10 +405,14 @@ public class AlarmService {
 		} else {
 			SendBlockit.BlockitMesaageSend(botId, botToken, message);
 
-			AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid)
+			AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
 					.noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동 이상").build();
 
-			noticeMapper.create(dto);
+			if(noticeMapper.count(dto) > 0) {
+				throw new MessageSendException("동일한 알람 내역 존재");
+			}else {
+				noticeMapper.create(dto);
+			}
 		}
 	}
 

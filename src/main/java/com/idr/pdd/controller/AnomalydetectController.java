@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.idr.pdd.common.Message;
 import com.idr.pdd.common.StatusEnum;
+import com.idr.pdd.exception.MessageSendException;
 import com.idr.pdd.common.CheckUtils;
 import com.idr.pdd.service.AnomalydetectService;
 import com.idr.pdd.vo.Anomalydetect;
@@ -46,7 +47,12 @@ public class AnomalydetectController {
 				throw new ValidationException("필수값 입력해주세요.");
 			}
 			
-			int result = service.create(param);
+			int result = 0 ;
+			if(service.count(param) > 0) {
+				throw new MessageSendException("동일한 알람 내역 존재");
+			}else {
+				result = service.create(param);
+			}
 			
 			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
 	        
