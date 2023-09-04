@@ -51,6 +51,24 @@ public class BlockKitDataParshing {
 
 		return url;
 	}
+	
+	public static String setNotOperatepressOccurUrl(String plant, String line,String getdate, String tid) {
+		String req = null;
+
+		String url = "https://idrenvision.iptime.org:8171/message/notOperatepress/notice" + "?plant=" + plant +"&line="+line
+				+"&getdate="+getdate+"&tid="+ tid ;
+
+		return url;
+	}
+	
+	public static String setNotOperatepressNoticeUrl(String plant, String line,String getdate, String tid) {
+		String req = null;
+
+		String url = "https://idrenvision.iptime.org:8171/message/notOperatepress/confirm" + "?plant=" + plant +"&line="+line
+				+"&getdate="+getdate+"&tid="+ tid ;
+
+		return url;
+	}
 
 	// 계획대비 생산량 부족
 	public static String underProduction(String blockKit, String btnString, String btnUrl, String plantName,
@@ -201,21 +219,5 @@ public class BlockKitDataParshing {
 		return blockKit;
 	}
 	
-	public static String setNotOperatepressOccurUrl(String plant, String line,String getdate, String tid) {
-		String req = null;
-
-		String url = "http://idrenvision.iptime.org:8171/message/notOperatepress/notice" + "?plant=" + plant +"&line="+line
-				+"&getdate="+getdate+"&tid="+ tid ;
-
-		return url;
-	}
 	
-	public static String setNotOperatepressNoticeUrl(String plant, String line,String getdate, String tid) {
-		String req = null;
-
-		String url = "http://idrenvision.iptime.org:8171/message/notOperatepress/confirm" + "?plant=" + plant +"&line="+line
-				+"&getdate="+getdate+"&tid="+ tid ;
-
-		return url;
-	}
 }
