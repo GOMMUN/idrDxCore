@@ -2,7 +2,10 @@ package com.idr.pdd.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.idr.pdd.common.BlockKitDataParshing;
@@ -10,6 +13,7 @@ import com.idr.pdd.common.BotId;
 import com.idr.pdd.common.SendBlockit;
 import com.idr.pdd.dto.AnomalydetectNoticeDTO;
 import com.idr.pdd.dto.AnomalydetectOccurDTO;
+import com.idr.pdd.dto.FairProd;
 import com.idr.pdd.dto.WorkDailyReportDTO;
 import com.idr.pdd.exception.MessageSendException;
 import com.idr.pdd.mapper.AlarmSettingMapper;
@@ -17,6 +21,7 @@ import com.idr.pdd.mapper.AnomalydetectNoticeMapper;
 import com.idr.pdd.mapper.AnomalydetectOccurMapper;
 import com.idr.pdd.mapper.BlockKitMapper;
 import com.idr.pdd.mapper.FactoryMapper;
+import com.idr.pdd.mapper.KeyWordAlaramMapper;
 import com.idr.pdd.mapper.LineMapper;
 import com.idr.pdd.mapper.MaterialMapper;
 import com.idr.pdd.mapper.WorkContentsMapper;
@@ -64,6 +69,9 @@ public class AlarmService {
 	@Autowired
 	AnomalydetectNoticeMapper noticeMapper;
 
+	@Autowired
+	KeyWordAlaramMapper keywordalarammapper;
+
 	public boolean plantCheck(String plant) {
 		if ("KEM".equals(plant)) {
 			return true;
@@ -71,7 +79,7 @@ public class AlarmService {
 			return false;
 		}
 	}
-	
+
 	// 협력사 한테 알람 보내기
 	// 작업내용 용 발생
 	public void occur(WorkDailyReportDTO parent, String tid) throws Exception {
@@ -129,10 +137,10 @@ public class AlarmService {
 
 				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
 						.occurReason(UNDER_PRODUCTION).occurReasondescRiption("생산계획 대비 생산량 부족").build();
-				
-				if(occurMapper.count(dto) > 0) {
+
+				if (occurMapper.count(dto) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");
-				}else {
+				} else {
 					occurMapper.create(dto);
 				}
 			}
@@ -187,9 +195,9 @@ public class AlarmService {
 				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
 						.occurReason(DEFECT_RATE).occurReasondescRiption("불량율 알림").build();
 
-				if(occurMapper.count(dto) > 0) {
+				if (occurMapper.count(dto) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");
-				}else {
+				} else {
 					occurMapper.create(dto);
 				}
 
@@ -242,15 +250,15 @@ public class AlarmService {
 			AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
 					.occurReason(NOTOPERATE_PRESS).occurReasondescRiption("프레스 설비 작동 이상").build();
 
-			if(occurMapper.count(dto) > 0) {
+			if (occurMapper.count(dto) > 0) {
 				throw new MessageSendException("동일한 알람 내역 존재");
-			}else {
+			} else {
 				occurMapper.create(dto);
 			}
 		}
 
-	}	
-	
+	}
+
 	// 대표기업한테 알람보내기
 	// 작업내용 용 통보
 	public void notice(WorkDailyReportDTO parent, String tid) throws Exception {
@@ -305,9 +313,9 @@ public class AlarmService {
 				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
 						.noticeReason(UNDER_PRODUCTION).noticeReasondescRiption("생산계획 대비 생산량 부족").build();
 
-				if(noticeMapper.count(dto) > 0) {
+				if (noticeMapper.count(dto) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");
-				}else {
+				} else {
 					noticeMapper.create(dto);
 				}
 			}
@@ -361,9 +369,9 @@ public class AlarmService {
 				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
 						.noticeReason(DEFECT_RATE).noticeReasondescRiption("불량율 알림").build();
 
-				if(noticeMapper.count(dto) > 0) {
+				if (noticeMapper.count(dto) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");
-				}else {
+				} else {
 					noticeMapper.create(dto);
 				}
 			}
@@ -408,12 +416,122 @@ public class AlarmService {
 			AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
 					.noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동 이상").build();
 
-			if(noticeMapper.count(dto) > 0) {
+			if (noticeMapper.count(dto) > 0) {
 				throw new MessageSendException("동일한 알람 내역 존재");
-			}else {
+			} else {
 				noticeMapper.create(dto);
 			}
 		}
 	}
 
+	// =====================키워드 알람=================================
+	public void palram(String plant) throws Exception {
+
+		List<String> rank = keywordalarammapper.rank(plant);
+
+		List<String> lineList = new ArrayList<>();
+		List<List<FairProd>> finalresult = new ArrayList<>();
+
+		if (rank.size() > 4) {
+			lineList.add(rank.get(0));
+			lineList.add(rank.get(1));
+			lineList.add(rank.get(rank.size() - 2));
+			lineList.add(rank.get(rank.size() - 1));
+			finalresult.add(keywordalarammapper.palaram(lineList.get(0)));
+			finalresult.add(keywordalarammapper.palaram(lineList.get(1)));
+			finalresult.add(keywordalarammapper.palaram(lineList.get(2)));
+			finalresult.add(keywordalarammapper.palaram(lineList.get(3)));
+		} else {
+			for (String line : rank) {
+				finalresult.add(keywordalarammapper.palaram(line));
+			}
+		}
+
+		String blockKit = blockKitMapper.find("P-ALARAM");
+		// String btnString = "확인";
+
+		String message = BlockKitDataParshing.palaram(blockKit, finalresult);
+
+		String botId = BotId.NOTOPERATE_PRESS_MAIN.getBot();
+
+		String botToken = SendBlockit.BlockitToken(botId);
+
+		if (botToken == null) {
+			throw new MessageSendException();
+		} else {
+			SendBlockit.BlockitMesaageSend(botId, botToken, message);
+
+			// AnomalydetectNoticeDTO dto =
+			// AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
+			// .noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동
+			// 이상").build();
+
+		}
+	}
+
+	public void qalram(String plant) throws Exception {
+
+		List<FairProd> result = keywordalarammapper.qalaram(plant);
+
+		String blockKit = blockKitMapper.find("Q-ALARAM");
+		// String btnString = "확인";
+
+		String message = BlockKitDataParshing.qalaram(blockKit, result);
+
+		String botId = BotId.NOTOPERATE_PRESS_MAIN.getBot();
+
+		String botToken = SendBlockit.BlockitToken(botId);
+
+		if (botToken == null) {
+			throw new MessageSendException();
+		} else {
+			SendBlockit.BlockitMesaageSend(botId, botToken, message);
+
+			// AnomalydetectNoticeDTO dto =
+			// AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
+			// .noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동
+			// 이상").build();
+
+		}
+
+	}
+
+	public void calram(String plant) throws Exception {
+		
+		List<String> rank = keywordalarammapper.rank(plant);
+
+		List<String> lineList = new ArrayList<>();
+		List<List<FairProd>> finalresult = new ArrayList<>();
+
+		if (rank.size() > 4) {
+			lineList.add(rank.get(0));
+			lineList.add(rank.get(1));
+			lineList.add(rank.get(rank.size() - 2));
+			lineList.add(rank.get(rank.size() - 1));
+			finalresult.add(keywordalarammapper.calaram(lineList.get(0)));
+			finalresult.add(keywordalarammapper.calaram(lineList.get(1)));
+			finalresult.add(keywordalarammapper.calaram(lineList.get(2)));
+			finalresult.add(keywordalarammapper.calaram(lineList.get(3)));
+		} else {
+			for (String line : rank) {
+				finalresult.add(keywordalarammapper.calaram(line));
+			}
+		}
+
+		String blockKit = blockKitMapper.find("C-ALARAM");
+		// String btnString = "확인";
+
+		String message = BlockKitDataParshing.calaram(blockKit, finalresult);
+
+		String botId = BotId.NOTOPERATE_PRESS_MAIN.getBot();
+
+		String botToken = SendBlockit.BlockitToken(botId);
+
+		if (botToken == null) {
+			throw new MessageSendException();
+		} else {
+			SendBlockit.BlockitMesaageSend(botId, botToken, message);
+		}
+
+	}
 }
