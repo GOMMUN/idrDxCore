@@ -136,4 +136,33 @@ public class KeyWordAlarm {
 			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@ResponseBody
+	@GetMapping("/dalram")
+	public ResponseEntity<Message> dalram(@RequestParam("plant") String plant) throws Exception {
+
+		Message message = new Message();
+		HttpHeaders headers = new HttpHeaders();
+
+		// 알람 보낼 공장 체크
+
+			alarmService.dalram(plant);
+
+		try {
+			headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+			message.setStatus(StatusEnum.OK.getCode());
+			message.setMessage(StatusEnum.OK.getName());
+			message.setData(null);
+
+			return new ResponseEntity<>(message, headers, HttpStatus.OK);
+		} catch (Exception e) {
+
+			message.setStatus(StatusEnum.BAD_REQUEST.getCode());
+			message.setMessage(e.getMessage());
+			message.setData(null);
+
+			return new ResponseEntity<>(message, headers, HttpStatus.BAD_REQUEST);
+		}
+	}
 }

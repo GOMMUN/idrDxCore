@@ -452,7 +452,7 @@ public class AlarmService {
 
 		String message = BlockKitDataParshing.palaram(blockKit, finalresult);
 
-		String botId = BotId.NOTOPERATE_PRESS_MAIN.getBot();
+		String botId = BotId.PALAM_MAIN.getBot();
 
 		String botToken = SendBlockit.BlockitToken(botId);
 
@@ -478,7 +478,7 @@ public class AlarmService {
 
 		String message = BlockKitDataParshing.qalaram(blockKit, result);
 
-		String botId = BotId.NOTOPERATE_PRESS_MAIN.getBot();
+		String botId = BotId.QALAM_MAIN.getBot();
 
 		String botToken = SendBlockit.BlockitToken(botId);
 
@@ -497,7 +497,7 @@ public class AlarmService {
 	}
 
 	public void calram(String plant) throws Exception {
-		
+
 		List<String> rank = keywordalarammapper.rank(plant);
 
 		List<String> lineList = new ArrayList<>();
@@ -523,7 +523,7 @@ public class AlarmService {
 
 		String message = BlockKitDataParshing.calaram(blockKit, finalresult);
 
-		String botId = BotId.NOTOPERATE_PRESS_MAIN.getBot();
+		String botId = BotId.CALAM_MAIN.getBot();
 
 		String botToken = SendBlockit.BlockitToken(botId);
 
@@ -533,5 +533,31 @@ public class AlarmService {
 			SendBlockit.BlockitMesaageSend(botId, botToken, message);
 		}
 
+	}
+
+	public void dalram(String plant) throws Exception {
+
+		FairProd result = keywordalarammapper.dalaram(plant);
+
+		String blockKit = blockKitMapper.find("D-ALARAM");
+		// String btnString = "확인";
+
+		String message = BlockKitDataParshing.dalaram(blockKit, result);
+
+		String botId = BotId.DALAM_MAIN.getBot();
+
+		String botToken = SendBlockit.BlockitToken(botId);
+
+		if (botToken == null) {
+			throw new MessageSendException();
+		} else {
+			SendBlockit.BlockitMesaageSend(botId, botToken, message);
+
+			// AnomalydetectNoticeDTO dto =
+			// AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
+			// .noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동
+			// 이상").build();
+
+		}
 	}
 }

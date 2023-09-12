@@ -17,4 +17,6 @@ public interface KeyWordAlaramMapper {
 	List<FairProd> qalaram(String plant);
 
 	List<FairProd> calaram(String line);
+	
+	FairProd dalaram(String plant);
 }

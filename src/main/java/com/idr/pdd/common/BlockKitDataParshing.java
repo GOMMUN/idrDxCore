@@ -380,5 +380,31 @@ public class BlockKitDataParshing {
 
 		return blockKit;
 	}
+	
+	public static String dalaram(String blockKit, FairProd result) {
+
+		JsonObject jsonObject = (JsonObject) new JsonParser().parse(blockKit);
+
+		JsonArray jsonArray = jsonObject.get("blocks").getAsJsonArray();
+
+		int index = 0;
+
+		for (JsonElement jsonElement : jsonArray) {
+			if (index == 1) {
+				jsonElement.getAsJsonObject().get("inlines").getAsJsonArray().get(0).getAsJsonObject()
+						.addProperty("text", result.getFactoryname());
+			} else if (index == 2) {
+				jsonElement.getAsJsonObject().get("inlines").getAsJsonArray().get(1).getAsJsonObject()
+				.addProperty("text", " : " + result.getPlanQty()+ " 개");
+			} else if (index == 3) {
+				jsonElement.getAsJsonObject().get("inlines").getAsJsonArray().get(1).getAsJsonObject()
+				.addProperty("text", " : " + result.getProdQty()+ " 개");
+			}
+			index++;
+		}
+		blockKit = jsonObject.toString();
+
+		return blockKit;
+	}
 
 }
