@@ -27,11 +27,13 @@
         	PERSONID, 
         	OVERTIME, 
         	TID, 
+        	NOTES,
         	WORKDAILY_SEQ
         ) VALUES(
         	#{personid}
         	, #{overtime}
             , #{tid}
+            , #{notes}
             , #{workdailySeq}
         )
     </insert>

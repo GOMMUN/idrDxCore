@@ -30,6 +30,9 @@ public class WorkerInput {
 	@Schema(name = "overtime", description = "잔업", example = "Y")
 	private String overtime;
 	
+	@Schema(name = "notes", description = "비고", example = "Y")
+	private String notes;
+	
 	@Schema(name = "tid", description = "tid", example = "7WOR5B3B-242B-4696-AD74-F9D6D8TE0002", required = true)
 	private String tid;
 }

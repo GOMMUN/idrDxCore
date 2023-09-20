@@ -90,6 +90,7 @@ public class WorkerInputService{
 										.overtime(param.getOvertime())
 										.tid(param.getTid())
 										.workdailySeq(dataseq)
+										.notes(param.getNotes())
 										.build();
 		
 		int count = mapper.countByWorker(result);
