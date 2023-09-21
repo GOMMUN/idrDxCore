@@ -22,9 +22,9 @@
         	TID, 
         	WORKDAILY_SEQ
         ) VALUES(
-        	#{personid}
-        	, #{supporttimeFrom}
-        	, #{supporttimeTo}
+        	#{personid},
+        	CONCAT(REPLACE(#{supporttimeFrom},':',''),'00'),
+			CONCAT(REPLACE(#{supporttimeTo},':',''),'00')
             , #{manhour}
             , #{tid}
             , #{workdailySeq}
