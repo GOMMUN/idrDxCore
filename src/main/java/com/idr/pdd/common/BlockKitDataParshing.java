@@ -15,7 +15,7 @@ public class BlockKitDataParshing {
 
 		String req = null;
 
-		String url = "https://idrenvision.iptime.org:8171/message/underProduction/notice" + "?plant=" + plant + "&tid="
+		String url = "https://dx.idrenvision.com:8171/message/underProduction/notice" + "?plant=" + plant + "&tid="
 				+ tid + "&material=" + material + "&planQty=" + planQty + "&prodQty=" + prodQty + "&percent=" + percent;
 
 		return url;
@@ -26,7 +26,7 @@ public class BlockKitDataParshing {
 
 		String req = null;
 
-		String url = "https://idrenvision.iptime.org:8171/message/underProduction/confirm" + "?plant=" + plant + "&tid="
+		String url = "https://dx.idrenvision.com:8171/message/underProduction/confirm" + "?plant=" + plant + "&tid="
 				+ tid;
 
 		return url;
@@ -37,7 +37,7 @@ public class BlockKitDataParshing {
 
 		String req = null;
 
-		String url = "https://idrenvision.iptime.org:8171/message/defectRate/notice" + "?plant=" + plant + "&material="
+		String url = "https://dx.idrenvision.com:8171/message/defectRate/notice" + "?plant=" + plant + "&material="
 				+ material + "&tid=" + tid + "&prodDate=" + prodDate + "&failQty=" + failQty + "&prodQty=" + prodQty
 				+ "&percent=" + percent;
 
@@ -49,7 +49,7 @@ public class BlockKitDataParshing {
 
 		String req = null;
 
-		String url = "https://idrenvision.iptime.org:8171/message/defectRate/confirm" + "?plant=" + plant + "&tid="
+		String url = "https://dx.idrenvision.com:8171/message/defectRate/confirm" + "?plant=" + plant + "&tid="
 				+ tid;
 
 		return url;
@@ -58,7 +58,7 @@ public class BlockKitDataParshing {
 	public static String setNotOperatepressOccurUrl(String plant, String line, String getdate, String tid) {
 		String req = null;
 
-		String url = "https://idrenvision.iptime.org:8171/message/notOperatepress/notice" + "?plant=" + plant + "&line="
+		String url = "https://dx.idrenvision.com:8171/message/notOperatepress/notice" + "?plant=" + plant + "&line="
 				+ line + "&getdate=" + getdate + "&tid=" + tid;
 
 		return url;
@@ -67,7 +67,7 @@ public class BlockKitDataParshing {
 	public static String setNotOperatepressNoticeUrl(String plant, String line, String getdate, String tid) {
 		String req = null;
 
-		String url = "https://idrenvision.iptime.org:8171/message/notOperatepress/confirm" + "?plant=" + plant
+		String url = "https://dx.idrenvision.com:8171/message/notOperatepress/confirm" + "?plant=" + plant
 				+ "&line=" + line + "&getdate=" + getdate + "&tid=" + tid;
 
 		return url;
