@@ -45,7 +45,7 @@ public class AnomalydetectService{
 				.occurid(param.getMessengerid())
 				.occurReason(param.getMessengerReason())
 				.occurReasondescRiption(param.getMessengerReasondescription())
-				.tid(param.getMessengerid()).build();
+				.tid(param.getTid()).build();
 			
 			result = occurMapper.count(data);
 		}else if("NOTICE".equals(param.getMessengerState())) {
@@ -55,7 +55,7 @@ public class AnomalydetectService{
 					.noticeid(param.getMessengerid())
 					.noticeReason(param.getMessengerReason())
 					.noticeReasondescRiption(param.getMessengerReasondescription())
-					.tid(param.getMessengerid()).build();
+					.tid(param.getTid()).build();
 			
 			result = noticeMapper.count(data);
 		}else if("CONFIRM".equals(param.getMessengerState())) {
@@ -63,7 +63,7 @@ public class AnomalydetectService{
 					.factoryid(param.getFactory())
 					.confirmid(param.getMessengerid())
 					.confirmReason(param.getMessengerReason())
-					.tid(param.getMessengerid()).build();
+					.tid(param.getTid()).build();
 			
 			result = confirmMapper.count(data);
 		}
@@ -83,7 +83,7 @@ public class AnomalydetectService{
 				.occurid(param.getMessengerid())
 				.occurReason(param.getMessengerReason())
 				.occurReasondescRiption(param.getMessengerReasondescription())
-				.tid(param.getMessengerid()).build();
+				.tid(param.getTid()).build();
 			
 			result = occurMapper.create(data);
 		}else if("NOTICE".equals(param.getMessengerState())) {
@@ -93,7 +93,7 @@ public class AnomalydetectService{
 					.noticeid(param.getMessengerid())
 					.noticeReason(param.getMessengerReason())
 					.noticeReasondescRiption(param.getMessengerReasondescription())
-					.tid(param.getMessengerid()).build();
+					.tid(param.getTid()).build();
 			
 			result = noticeMapper.create(data);
 		}else if("CONFIRM".equals(param.getMessengerState())) {
@@ -101,7 +101,7 @@ public class AnomalydetectService{
 					.factoryid(param.getFactory())
 					.confirmid(param.getMessengerid())
 					.confirmReason(param.getMessengerReason())
-					.tid(param.getMessengerid()).build();
+					.tid(param.getTid()).build();
 			
 			result = confirmMapper.create(data);
 		}

@@ -18,6 +18,7 @@ import com.idr.pdd.common.BotId;
 import com.idr.pdd.common.Message;
 import com.idr.pdd.common.SendBlockit;
 import com.idr.pdd.common.StatusEnum;
+import com.idr.pdd.common.Tid;
 import com.idr.pdd.dto.AnomalydetectOccurDTO;
 import com.idr.pdd.exception.MessageSendException;
 import com.idr.pdd.service.AnomalydetectService;
@@ -56,7 +57,7 @@ public class MessageController {
 	@ResponseBody
 	@GetMapping("/underProduction/notice")
 	public ResponseEntity<Message> underProductionNotice(String plant, String material, String tid, int planQty,
-			int prodQty, int percent) {
+			int prodQty, int percent, String messageTid) {
 		// 협력사 > 대표기업으로 알람
 		// 통보 테이블에 insert
 
@@ -68,7 +69,7 @@ public class MessageController {
 			String plantName = factoryService.findName(plant);
 			String materialName = materialService.findName(material);
 
-			String btnUrl = BlockKitDataParshing.setUnderProductionNoticeUrl(plant, material, tid, planQty, prodQty,
+			String btnUrl = BlockKitDataParshing.setUnderProductionNoticeUrl(plant, material, tid, messageTid, planQty, prodQty,
 					percent);
 
 			// 통보 > 확인
@@ -89,7 +90,8 @@ public class MessageController {
 				Anomalydetect anomalydetect = new Anomalydetect();
 
 				anomalydetect.setFactory(plant);
-				anomalydetect.setMessengerid(tid);
+				anomalydetect.setMessengerid(messageTid);
+				anomalydetect.setTid(tid);
 				anomalydetect.setMessengerReason("UNDER-PRODUCTION");
 				anomalydetect.setMessengerReasondescription("생산계획 대비 생산량 부족");
 				anomalydetect.setMessengerState("NOTICE");
@@ -119,7 +121,7 @@ public class MessageController {
 
 	@ResponseBody
 	@GetMapping("/underProduction/confirm")
-	public ResponseEntity<Message> underProductionConfirm(String plant, String tid) {
+	public ResponseEntity<Message> underProductionConfirm(String plant, String tid, String messageTid) {
 		// 확인 테이블에만 insert
 		// 알람 x
 		Message message = new Message();
@@ -130,7 +132,8 @@ public class MessageController {
 			Anomalydetect anomalydetect = new Anomalydetect();
 
 			anomalydetect.setFactory(plant);
-			anomalydetect.setMessengerid(tid);
+			anomalydetect.setMessengerid(messageTid);
+			anomalydetect.setTid(tid);
 			anomalydetect.setMessengerReason("UNDER-PRODUCTION");
 			anomalydetect.setMessengerReasondescription("생산계획 대비 생산량 부족");
 			anomalydetect.setMessengerState("CONFIRM");
@@ -158,7 +161,7 @@ public class MessageController {
 
 	@ResponseBody
 	@GetMapping("/defectRate/notice")
-	public ResponseEntity<Message> defectRateNotice(String plant, String material, String tid, String prodDate,
+	public ResponseEntity<Message> defectRateNotice(String plant, String material, String tid, String messageTid, String prodDate,
 			int failQty, int prodQty, int percent) {
 
 		Message message = new Message();
@@ -169,7 +172,7 @@ public class MessageController {
 			String plantName = factoryService.findName(plant);
 			String materialName = materialService.findName(material);
 
-			String btnUrl = BlockKitDataParshing.setDefectRateNoticeUrl(plant, material, tid, prodDate, failQty,
+			String btnUrl = BlockKitDataParshing.setDefectRateNoticeUrl(plant, material, tid, messageTid, prodDate, failQty,
 					prodQty, percent);
 
 			// defectRate(String blockKit, String btnString, String btnUrl, String prodDate,
@@ -190,7 +193,8 @@ public class MessageController {
 				Anomalydetect anomalydetect = new Anomalydetect();
 
 				anomalydetect.setFactory(plant);
-				anomalydetect.setMessengerid(tid);
+				anomalydetect.setMessengerid(messageTid);
+				anomalydetect.setTid(tid);
 				anomalydetect.setMessengerReason("DEFECT-RATE");
 				anomalydetect.setMessengerReasondescription("불량율 알림");
 				anomalydetect.setMessengerState("NOTICE");
@@ -220,7 +224,7 @@ public class MessageController {
 
 	@ResponseBody
 	@GetMapping("/defectRate/confirm")
-	public ResponseEntity<Message> defectRateConfirm(String plant, String tid) {
+	public ResponseEntity<Message> defectRateConfirm(String plant, String tid, String messageTid) {
 
 		Message message = new Message();
 		HttpHeaders headers = new HttpHeaders();
@@ -230,7 +234,8 @@ public class MessageController {
 			Anomalydetect anomalydetect = new Anomalydetect();
 
 			anomalydetect.setFactory(plant);
-			anomalydetect.setMessengerid(tid);
+			anomalydetect.setMessengerid(messageTid);
+			anomalydetect.setTid(tid);
 			anomalydetect.setMessengerReason("DEFECT-RATE");
 			anomalydetect.setMessengerReasondescription("불량율 알림");
 			anomalydetect.setMessengerState("CONFIRM");
@@ -258,7 +263,7 @@ public class MessageController {
 
 	@ResponseBody
 	@GetMapping("/notOperatepress/notice")
-	public ResponseEntity<Message> NotOperatepressNotice(String plant, String line, String getdate, String tid) {
+	public ResponseEntity<Message> NotOperatepressNotice(String plant, String line, String getdate, String tid, String messageTid) {
 		// 협력사 > 대표기업으로 알람
 		// 통보 테이블에 insert
 
@@ -269,8 +274,8 @@ public class MessageController {
 
 			String plantName = factoryService.findName(plant);
 			String linename = lineService.findName(line);
-
-			String btnUrl = BlockKitDataParshing.setNotOperatepressNoticeUrl(plant, line,getdate, tid);
+			
+			String btnUrl = BlockKitDataParshing.setNotOperatepressNoticeUrl(plant, line,getdate, tid, messageTid);
 
 			// 통보 > 확인
 			String messageParam = BlockKitDataParshing.notoperatePress(blockKitService.find("NOTOPERATE-PRESS"), "확인",
@@ -289,7 +294,8 @@ public class MessageController {
 				Anomalydetect anomalydetect = new Anomalydetect();
 
 				anomalydetect.setFactory(plant);
-				anomalydetect.setMessengerid(tid);
+				anomalydetect.setMessengerid(messageTid);
+				anomalydetect.setTid(tid);
 				anomalydetect.setMessengerReason("NOTOPERATE-PRESS");
 				anomalydetect.setMessengerReasondescription("프레스 설비 작동 이상");
 				anomalydetect.setMessengerState("NOTICE");
@@ -319,7 +325,7 @@ public class MessageController {
 	
 	@ResponseBody
 	@GetMapping("/notOperatepress/confirm")
-	public ResponseEntity<Message> NotOperatepressConfirm(String plant, String tid) {
+	public ResponseEntity<Message> NotOperatepressConfirm(String plant, String tid, String messageTid) {
 		// 확인 테이블에만 insert
 		// 알람 x
 		Message message = new Message();
@@ -330,7 +336,8 @@ public class MessageController {
 			Anomalydetect anomalydetect = new Anomalydetect();
 
 			anomalydetect.setFactory(plant);
-			anomalydetect.setMessengerid(tid);
+			anomalydetect.setMessengerid(messageTid);
+			anomalydetect.setTid(tid);
 			anomalydetect.setMessengerReason("NOTOPERATE-PRESS");
 			anomalydetect.setMessengerReasondescription("프레스 설비 작동 이상");
 			anomalydetect.setMessengerState("CONFIRM");

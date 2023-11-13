@@ -11,6 +11,7 @@ import java.util.Random;
 import com.idr.pdd.common.BlockKitDataParshing;
 import com.idr.pdd.common.BotId;
 import com.idr.pdd.common.SendBlockit;
+import com.idr.pdd.common.Tid;
 import com.idr.pdd.dto.AnomalydetectNoticeDTO;
 import com.idr.pdd.dto.AnomalydetectOccurDTO;
 import com.idr.pdd.dto.FairProd;
@@ -102,6 +103,10 @@ public class AlarmService {
 			percent = (int) ((double) prodQty / (double) planQty * 100);
 		}
 
+		/** TODO
+		 * START
+		 * 넬슨 룰 체크로 생산량 적용으로 변경
+		 */
 		// 설정값
 		int value = alarmSettingMapper.find(UNDER_PRODUCTION);
 
@@ -109,7 +114,7 @@ public class AlarmService {
 		if (value > percent) {
 
 			String plant = parent.getFactoryid();
-			String plantName = factoryMapper.findName(plant);
+		String plantName = factoryMapper.findName(plant);
 
 			String material = parent.getMaterialid();
 			String materialName = materialMapper.findName(material);
@@ -117,7 +122,9 @@ public class AlarmService {
 			// blockkit message
 			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
 			String btnString = "통보";
-			String btnUrl = BlockKitDataParshing.setUnderProductionOccurUrl(plant, material, tid, planQty, prodQty,
+			
+			String messageTid = Tid.generate();
+			String btnUrl = BlockKitDataParshing.setUnderProductionOccurUrl(plant, material, tid, messageTid, planQty, prodQty,
 					percent);
 
 			String message = BlockKitDataParshing.underProduction(blockKit, btnString, btnUrl, plantName, materialName,
@@ -145,12 +152,21 @@ public class AlarmService {
 				}
 			}
 		}
+		
+		/** TODO
+		 * END
+		 * 넬슨 룰 체크로 생산량 적용으로 변경
+		 */
 
 		////////////////////////////////////////////////////////
 		/////////////////////// 불량률 알람 ////////////////////////
 		///////////////////////////////////////////////////////
 		int firsttimeFailQty = workContentsMapper.sumFirsttimeFailQty(dataSeq);
 
+		/** TODO
+		 * START
+		 * 넬슨 룰 체크로 불량률 적용으로 변경
+		 */
 		// 설정값
 		int value2 = alarmSettingMapper.find(DEFECT_RATE);
 
@@ -175,7 +191,8 @@ public class AlarmService {
 			// blockkit message
 			String blockKit = blockKitMapper.find(DEFECT_RATE);
 			String btnString = "통보";
-			String btnUrl = BlockKitDataParshing.setDefectRateOccurUrl(plant, material, tid, prodDate, firsttimeFailQty,
+			String messageTid = Tid.generate();
+			String btnUrl = BlockKitDataParshing.setDefectRateOccurUrl(plant, material, tid, messageTid, prodDate, firsttimeFailQty,
 					prodQty, percent2);
 			// String btnUrl = "https://www.daum.net/";
 
@@ -192,7 +209,7 @@ public class AlarmService {
 				SendBlockit.BlockitMesaageSend(botId, botToken, message);
 
 				// 이상감지 알람 테이블에 INSERT
-				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
+				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(messageTid).tid(tid)
 						.occurReason(DEFECT_RATE).occurReasondescRiption("불량율 알림").build();
 
 				if (occurMapper.count(dto) > 0) {
@@ -203,6 +220,10 @@ public class AlarmService {
 
 			}
 		}
+		/** TODO
+		 * END
+		 * 넬슨 룰 체크로 불량률 적용으로 변경
+		 */
 	}
 
 	// 비가동 내역 알람
@@ -227,7 +248,8 @@ public class AlarmService {
 		// blockkit message
 		String blockKit = blockKitMapper.find(NOTOPERATE_PRESS);
 		String btnString = "통보";
-		String btnUrl = BlockKitDataParshing.setNotOperatepressOccurUrl(plant, line, getdate, tid);
+		String messageTid = Tid.generate();
+		String btnUrl = BlockKitDataParshing.setNotOperatepressOccurUrl(plant, line, getdate, tid, messageTid);
 		String message = null;
 		try {
 			message = BlockKitDataParshing.notoperatePress(blockKit, btnString, btnUrl, plantName, lineName, getdate);
@@ -247,7 +269,7 @@ public class AlarmService {
 			// 이상감지 알람 테이블에 INSERT
 			Anomalydetect anomalydetect = new Anomalydetect();
 
-			AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
+			AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(messageTid).tid(tid)
 					.occurReason(NOTOPERATE_PRESS).occurReasondescRiption("프레스 설비 작동 이상").build();
 
 			if (occurMapper.count(dto) > 0) {
@@ -294,7 +316,8 @@ public class AlarmService {
 			// blockkit message
 			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
 			String btnString = "확인";
-			String btnUrl = BlockKitDataParshing.setUnderProductionNoticeUrl(plant, material, tid, planQty, prodQty,
+			String messageTid = Tid.generate();
+			String btnUrl = BlockKitDataParshing.setUnderProductionNoticeUrl(plant, material, tid, messageTid, planQty, prodQty,
 					percent);
 			// String btnUrl = "https://www.daum.net/";
 
@@ -310,7 +333,7 @@ public class AlarmService {
 				SendBlockit.BlockitMesaageSend(botId, botToken, message);
 
 				// 이상감지 알람 테이블에 INSERT
-				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
+				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(messageTid).tid(tid)
 						.noticeReason(UNDER_PRODUCTION).noticeReasondescRiption("생산계획 대비 생산량 부족").build();
 
 				if (noticeMapper.count(dto) > 0) {
@@ -350,7 +373,8 @@ public class AlarmService {
 			// blockkit message
 			String blockKit = blockKitMapper.find(DEFECT_RATE);
 			String btnString = "확인";
-			String btnUrl = BlockKitDataParshing.setDefectRateNoticeUrl(plant, material, tid, prodDate,
+			String messageTid = Tid.generate();
+			String btnUrl = BlockKitDataParshing.setDefectRateNoticeUrl(plant, material, tid, messageTid, prodDate,
 					firsttimeFailQty, prodQty, percent2);
 			// String btnUrl = "https://www.daum.net/";
 
@@ -366,7 +390,7 @@ public class AlarmService {
 				SendBlockit.BlockitMesaageSend(botId, botToken, message);
 
 				// 이상감지 알람 테이블에 INSERT
-				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
+				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(messageTid).tid(tid)
 						.noticeReason(DEFECT_RATE).noticeReasondescRiption("불량율 알림").build();
 
 				if (noticeMapper.count(dto) > 0) {
@@ -400,7 +424,8 @@ public class AlarmService {
 		// blockkit message
 		String blockKit = blockKitMapper.find(NOTOPERATE_PRESS);
 		String btnString = "확인";
-		String btnUrl = BlockKitDataParshing.setNotOperatepressNoticeUrl(plant, line, getdate, tid);
+		String messageTid = Tid.generate();
+		String btnUrl = BlockKitDataParshing.setNotOperatepressNoticeUrl(plant, line, getdate, tid, messageTid);
 		String message = BlockKitDataParshing.notoperatePress(blockKit, btnString, btnUrl, plantName, lineName,
 				getdate);
 
@@ -413,7 +438,7 @@ public class AlarmService {
 		} else {
 			SendBlockit.BlockitMesaageSend(botId, botToken, message);
 
-			AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(tid).tid(tid)
+			AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(messageTid).tid(tid)
 					.noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동 이상").build();
 
 			if (noticeMapper.count(dto) > 0) {

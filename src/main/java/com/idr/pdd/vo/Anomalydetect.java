@@ -9,8 +9,11 @@ public class Anomalydetect {
 	@Schema(name = "factory", description = "factory", example = "KEM", required = true)
 	private String factory;
 	
-	@Schema(name = "messengerid", description = "tid", example = "7WOR5B3B-242B-4696-AD74-F9D6D8TE0002", required = true)
+	@Schema(name = "messengerid", description = "messageTid", example = "7WOR5B3B-242B-4696-AD74-F9D6D8TE0002", required = true)
 	private String messengerid;
+	
+	@Schema(name = "messengerid", description = "tid", example = "888R5B3B-242B-4696-AD74-F9D6D8TE0002", required = true)
+	private String tid;
 	
 	@Schema(name = "messengerState", description = "messengerState", example = "OCCUR", required = true)
 	private String messengerState;

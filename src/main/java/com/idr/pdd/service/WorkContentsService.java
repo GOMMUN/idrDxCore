@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkContentsService{
@@ -71,7 +72,6 @@ public class WorkContentsService{
 			if (!CheckUtils.isValidation(param)) {
 				throw new ValidationException("필수값 입력해주세요.");
 			}
-			
 			WorkDailyReportDTO parent = find(param);
 			
 			if (parent == null) {
@@ -84,21 +84,14 @@ public class WorkContentsService{
 				throw new ValidationException("작업일보가 존재하지 않습니다.");
 			}
 			
-			if(parentList.size() == 0) { 
-				parentList.add(parent);
-			}else if(parentList.size() > 0) {
-				for (WorkDailyReportDTO obj : parentList) {
-					if( parent.getDataseq() != obj.getDataseq()) {
-						parentList.add(parent);
-					}
-				}
-			}
-			
+			parentList.add(parent);
 			result += create(param,dataseq);
 			
 			jobexechist(params.get(0).getTid(), "Create",
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);
 		}
+		
+		parentList = parentList.stream().distinct().collect(Collectors.toList());
 		
 		if(parentList.size() > 0) {
 			for (WorkDailyReportDTO obj : parentList) {

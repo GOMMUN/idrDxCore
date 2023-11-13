@@ -17,7 +17,7 @@
         SELECT COUNT(*)
 		 FROM DSP_ANOMALYDETECT_NOTICE
 		WHERE ISUSABLE IS NOT NULL
-		AND TID = #{tid}
+		AND NOTICEID = #{noticeid}
 		AND NOTICE_REASON = #{noticeReason}
 		AND ISUSABLE = 'Usable'
     </select>

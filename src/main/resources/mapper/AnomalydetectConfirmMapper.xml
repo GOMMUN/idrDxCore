@@ -17,7 +17,7 @@
         SELECT COUNT(*)
 		 FROM DSP_ANOMALYDETECT_CONFIRM
 		WHERE ISUSABLE IS NOT NULL
-		AND TID = #{tid}
+		AND CONFIRMID = #{confirmid}
 		AND CONFIRM_REASON = #{confirmReason}
 		AND ISUSABLE = 'Usable'
     </select>

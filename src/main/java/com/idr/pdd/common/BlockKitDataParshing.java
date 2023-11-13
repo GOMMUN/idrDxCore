@@ -10,65 +10,65 @@ import java.util.List;
 
 public class BlockKitDataParshing {
 
-	public static String setUnderProductionOccurUrl(String plant, String material, String tid, int planQty, int prodQty,
+	public static String setUnderProductionOccurUrl(String plant, String material, String tid, String messageTid, int planQty, int prodQty,
 			int percent) {
 
 		String req = null;
 
 		String url = "https://dx.idrenvision.com:8171/message/underProduction/notice" + "?plant=" + plant + "&tid="
-				+ tid + "&material=" + material + "&planQty=" + planQty + "&prodQty=" + prodQty + "&percent=" + percent;
+				+ tid + "&messageTid=" + messageTid + "&material=" + material + "&planQty=" + planQty + "&prodQty=" + prodQty + "&percent=" + percent;
 
 		return url;
 	}
 
-	public static String setUnderProductionNoticeUrl(String plant, String material, String tid, int planQty,
+	public static String setUnderProductionNoticeUrl(String plant, String material, String tid, String messageTid, int planQty,
 			int prodQty, int percent) {
 
 		String req = null;
 
 		String url = "https://dx.idrenvision.com:8171/message/underProduction/confirm" + "?plant=" + plant + "&tid="
-				+ tid;
+				+ tid +  "&messageTid=" + messageTid;
 
 		return url;
 	}
 
-	public static String setDefectRateOccurUrl(String plant, String material, String tid, String prodDate, int failQty,
+	public static String setDefectRateOccurUrl(String plant, String material, String tid, String messageTid, String prodDate, int failQty,
 			int prodQty, int percent) {
 
 		String req = null;
 
 		String url = "https://dx.idrenvision.com:8171/message/defectRate/notice" + "?plant=" + plant + "&material="
-				+ material + "&tid=" + tid + "&prodDate=" + prodDate + "&failQty=" + failQty + "&prodQty=" + prodQty
+				+ material + "&tid=" + tid + "&messageTid=" + messageTid + "&prodDate=" + prodDate + "&failQty=" + failQty + "&prodQty=" + prodQty
 				+ "&percent=" + percent;
 
 		return url;
 	}
 
-	public static String setDefectRateNoticeUrl(String plant, String material, String tid, String prodDate, int failQty,
+	public static String setDefectRateNoticeUrl(String plant, String material, String tid, String messageTid, String prodDate, int failQty,
 			int prodQty, int percent) {
 
 		String req = null;
 
 		String url = "https://dx.idrenvision.com:8171/message/defectRate/confirm" + "?plant=" + plant + "&tid="
-				+ tid;
+				+ tid +  "&messageTid=" + messageTid;
 
 		return url;
 	}
 
-	public static String setNotOperatepressOccurUrl(String plant, String line, String getdate, String tid) {
+	public static String setNotOperatepressOccurUrl(String plant, String line, String getdate, String tid, String messageTid) {
 		String req = null;
 
 		String url = "https://dx.idrenvision.com:8171/message/notOperatepress/notice" + "?plant=" + plant + "&line="
-				+ line + "&getdate=" + getdate + "&tid=" + tid;
+				+ line + "&getdate=" + getdate + "&tid=" + tid +  "&messageTid=" + messageTid;
 
 		return url;
 	}
 
-	public static String setNotOperatepressNoticeUrl(String plant, String line, String getdate, String tid) {
+	public static String setNotOperatepressNoticeUrl(String plant, String line, String getdate, String tid, String messageTid) {
 		String req = null;
 
 		String url = "https://dx.idrenvision.com:8171/message/notOperatepress/confirm" + "?plant=" + plant
-				+ "&line=" + line + "&getdate=" + getdate + "&tid=" + tid;
+				+ "&line=" + line + "&getdate=" + getdate + "&tid=" + tid + "&messageTid=" + messageTid;
 
 		return url;
 	}

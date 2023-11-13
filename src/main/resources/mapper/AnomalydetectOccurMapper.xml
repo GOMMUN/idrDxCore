@@ -17,7 +17,7 @@
         SELECT COUNT(*)
 		 FROM DSP_ANOMALYDETECT_OCCUR
 		WHERE ISUSABLE IS NOT NULL
-		AND TID = #{tid}
+		AND OCCURID = #{occurid}
 		AND OCCUR_REASON = #{occurReason}
 		AND ISUSABLE = 'Usable'
     </select>
