@@ -107,7 +107,7 @@ public class AlarmService {
 		int value = alarmSettingMapper.find(UNDER_PRODUCTION);
 
 		// 설정값보다 백분율이 작을경우 알람 발생
-		if (value > percent) {
+		if (value >= percent) {
 
 			String plant = parent.getFactoryid();
 			String plantName = factoryMapper.findName(plant);
@@ -168,7 +168,7 @@ public class AlarmService {
 		}
 
 		// 설정값보다 백분율이 작을경우 알람 발생
-		if (value2 < percent2) {
+		if (value2 <= percent2) {
 			String plant = parent.getFactoryid();
 
 			String prodDate = parent.getWorkDate();
@@ -296,7 +296,7 @@ public class AlarmService {
 		int value = alarmSettingMapper.find(UNDER_PRODUCTION);
 
 		// 설정값보다 백분율이 작을경우 알람 발생
-		if (value > percent) {
+		if (value >= percent) {
 			String plant = parent.getFactoryid();
 			String plantName = factoryMapper.findName(plant);
 
@@ -356,7 +356,7 @@ public class AlarmService {
 		}
 
 		// 설정값보다 백분율이 작을경우 알람 발생
-		if (value2 < percent2) {
+		if (value2 <= percent2) {
 			String plant = parent.getFactoryid();
 
 			String prodDate = parent.getWorkDate();
