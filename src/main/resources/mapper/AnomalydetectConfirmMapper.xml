@@ -30,7 +30,10 @@
         	CONFIRM_UPDATOR, 
         	CONFIRM_TARGET,
         	CONFIRM_REASON,
-        	TID
+        	TID,
+        	EA1,
+        	EA2,
+        	VALUE
         ) VALUES(
         	#{factoryid}
         	, #{confirmid}
@@ -39,6 +42,9 @@
             , #{confirmTarget}
             , #{confirmReason}
             , #{tid}
+            , #{ea1}
+        	, #{ea2}
+        	, #{value}
         )
     </insert>
     

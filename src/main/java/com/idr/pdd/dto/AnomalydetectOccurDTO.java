@@ -31,6 +31,10 @@ public class AnomalydetectOccurDTO {
 	@Schema(name = "occurReasondescRiption", description = "Updator", example = "data", required = true)
 	private String occurReasondescRiption;
 	
+	private int ea1;
+	private int ea2;
+	private int value;
+	
 	private String creator;
 	private String createtime;
 	private String event;

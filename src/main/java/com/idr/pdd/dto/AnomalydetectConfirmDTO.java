@@ -21,6 +21,9 @@ public class AnomalydetectConfirmDTO {
 	private String eventtime;
 	private String isusable;
 	private String confirmReason;
+	private int ea1;
+	private int ea2;
+	private int value;
 	
 	@Schema(name = "tid", description = "tid", example = "7WOR5B3B-242B-4696-AD74-F9D6D8TE0002", required = true)
 	private String tid;

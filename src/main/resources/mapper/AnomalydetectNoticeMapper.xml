@@ -31,7 +31,10 @@
         	NOTICE_TARGET, 
         	NOTICE_REASON, 
         	NOTICE_REASONDESCRIPTION
-        	,TID
+        	,TID,
+        	EA1,
+        	EA2,
+        	VALUE
         ) VALUES(
         	#{factoryid}
         	, #{noticeid}
@@ -41,6 +44,9 @@
             , #{noticeReason}
             , #{noticeReasondescRiption}
             , #{tid}
+            , #{ea1}
+        	, #{ea2}
+        	, #{value}
         )
     </insert>
     

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.NelsonRuleSettingMapper">
+    
+    <select id="findByAlarmType" parameterType="String" resultType="NelsonruleSettingDTO">
+		SELECT DATASEQ, 
+		       ISNULL(LENGTH,0) AS LENGTH, 
+		       ISNULL(LIMIT,0) AS LIMIT, 
+		       NELSON_RULE, 
+		       ISCHECKED, 
+		       ALARM_TYPE, 
+		       TYPE_NAME 
+		FROM DSP_NELSONRULE_SETTING
+		WHERE 1=1
+		AND ALARM_TYPE = #{alarmType}
+		ORDER BY DATASEQ ASC
+    </select>
+    
+</mapper>

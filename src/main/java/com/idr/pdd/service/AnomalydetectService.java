@@ -83,6 +83,9 @@ public class AnomalydetectService{
 				.occurid(param.getMessengerid())
 				.occurReason(param.getMessengerReason())
 				.occurReasondescRiption(param.getMessengerReasondescription())
+				.ea1(param.getEa1())
+				.ea2(param.getEa2())
+				.value(param.getValue())
 				.tid(param.getTid()).build();
 			
 			result = occurMapper.create(data);
@@ -93,6 +96,9 @@ public class AnomalydetectService{
 					.noticeid(param.getMessengerid())
 					.noticeReason(param.getMessengerReason())
 					.noticeReasondescRiption(param.getMessengerReasondescription())
+					.ea1(param.getEa1())
+					.ea2(param.getEa2())
+					.value(param.getValue())
 					.tid(param.getTid()).build();
 			
 			result = noticeMapper.create(data);
@@ -101,6 +107,9 @@ public class AnomalydetectService{
 					.factoryid(param.getFactory())
 					.confirmid(param.getMessengerid())
 					.confirmReason(param.getMessengerReason())
+					.ea1(param.getEa1())
+					.ea2(param.getEa2())
+					.value(param.getValue())
 					.tid(param.getTid()).build();
 			
 			result = confirmMapper.create(data);

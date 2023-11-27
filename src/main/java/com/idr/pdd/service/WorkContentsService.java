@@ -55,6 +55,7 @@ public class WorkContentsService{
 										.workdailySeq(dataseq)
 										.notes(param.getNotes())
 										.build();
+		
 		return mapper.create(result);
 	}
 	
@@ -86,6 +87,7 @@ public class WorkContentsService{
 			
 			parentList.add(parent);
 			result += create(param,dataseq);
+			
 			
 			jobexechist(params.get(0).getTid(), "Create",
 					LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd HH:mm:SS")), null);

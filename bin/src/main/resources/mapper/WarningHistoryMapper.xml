@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.idr.pdd.mapper.WarningHistoryMapper">
+    
+    
+    <insert id="create" parameterType="WarningHistoryDTO">
+        
+        INSERT INTO DSP_WARNING_HISTORY (
+        	WORKDAILY_SEQ, 
+        	WORKCONTENTS_SEQ, 
+        	PROD_QTY_AVG, 
+        	FAIL_QTY_AVG, 
+        	TYPE_VALUE, 
+        	TID
+        ) VALUES(
+        	#{workdailySeq}, 
+        	#{workcontentsSeq}, 
+        	#{prodQtyAvg}, 
+        	#{failQtyAvg}, 
+        	#{typeValue}, 
+        	#{tid}
+        )
+        
+    </insert>
+    
+</mapper>

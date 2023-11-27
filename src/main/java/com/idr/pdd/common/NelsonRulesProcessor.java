@@ -1,6 +1,7 @@
 package com.idr.pdd.common;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NelsonRulesProcessor
 {
@@ -36,7 +37,9 @@ public class NelsonRulesProcessor
 	public int rule7_length = 11;	//	>= 11
 	public int rule8_length = 6;	//	>= 6
 
-	public NelsonRulesProcessor(double UCL, double LCL, int rule2_length, int rule3_length, int rule4_length, int rule5_length, int rule5_limit, int rule6_length, int rule6_limit, int rule7_length, int rule8_length)
+	public NelsonRulesProcessor(double UCL, double LCL, 
+			int rule2_length, int rule3_length, int rule4_length, int rule5_length, int rule5_limit, int rule6_length, int rule6_limit, int rule7_length, int rule8_length,
+			String rule1_use_yn, String rule2_use_yn, String rule3_use_yn, String rule4_use_yn, String rule5_use_yn, String rule6_use_yn, String rule7_use_yn, String rule8_use_yn)
 	{
 		this.rule2_length = rule2_length;
 		this.rule3_length = rule3_length;
@@ -47,8 +50,40 @@ public class NelsonRulesProcessor
 		this.rule6_limit = rule6_limit;
 		this.rule7_length = rule7_length;
 		this.rule8_length = rule8_length;
+		
+		if("Y".equals(rule1_use_yn)) {
+			this.rule1_use_yn = true;
+		}
+		
+		if("Y".equals(rule2_use_yn)) {
+			this.rule2_use_yn = true;
+		}
+		
+		if("Y".equals(rule3_use_yn)) {
+			this.rule3_use_yn = true;
+		}
+		
+		if("Y".equals(rule4_use_yn)) {
+			this.rule4_use_yn = true;
+		}
+		
+		if("Y".equals(rule5_use_yn)) {
+			this.rule5_use_yn = true;
+		}
+		
+		if("Y".equals(rule6_use_yn)) {
+			this.rule6_use_yn = true;
+		}
+		
+		if("Y".equals(rule7_use_yn)) {
+			this.rule7_use_yn = true;
+		}
+		
+		if("Y".equals(rule8_use_yn)) {
+			this.rule8_use_yn = true;
+		}
 
-		init(UCL, LCL);
+		init(UCL,LCL);
 	}
 
 	public void init(double UCL, double LCL)
@@ -63,6 +98,111 @@ public class NelsonRulesProcessor
 		LS1 = CL - Sigma;
 		LS2 = CL - Sigma * 2;
 	}
+	
+	public static List<Double> getUtcLtc(List<Double> numArray){
+		
+		// 표준 편차 계산
+        double sum = 0.0;
+        for (double num : numArray) {
+            sum += num;
+        }
+        double mean = sum / numArray.size();
+        
+        double sumOfSquares = 0.0;
+        for (double num : numArray) {
+            sumOfSquares += Math.pow(num - mean, 2);
+        }
+        double variance = sumOfSquares / numArray.size();
+        double sd = Math.sqrt(variance);
+        
+        List<Double> result = new ArrayList<>();
+        
+        // 3시그마 범위 계산
+        result.add(mean + (3 * sd));
+        result.add(mean - (3 * sd));
+        
+        return result;
+	}
+	
+	public void init2(List<Double> numArray)
+	{
+		// 표준 편차 계산
+        double sd = calculateStandardDeviation(numArray);
+        double mean = calculateMean(numArray);
+        
+        CL = sd;
+        // 3시그마 범위 계산
+        UCL = mean + (3 * CL);
+        LCL = mean - (3 * CL);
+        
+        US1 = mean + (1 * CL);
+		US2 = mean + (2 * CL);
+		LS1 = mean - (1 * CL);
+		LS2 = mean - (2 * CL);
+	}
+	
+	public double calculateMean(List<Double> numArray) {
+        double sum = 0.0;
+        for (double num : numArray) {
+            sum += num;
+        }
+        return sum / numArray.size();
+    }
+	
+	public double calculateStandardDeviation(List<Double> numArray) {
+        double mean = calculateMean(numArray);
+        double sumOfSquares = 0.0;
+
+        for (double num : numArray) {
+            sumOfSquares += Math.pow(num - mean, 2);
+        }
+
+        double variance = sumOfSquares / numArray.size();
+        return Math.sqrt(variance);
+    }
+	
+	public void calculateSD(double[] numArray) {
+       
+		List<Double> result = new ArrayList<Double>();
+		
+		int length = numArray.length;
+        double sum = 0.0;
+        double mean = 0.0;
+
+        // 1. 데이터의 합 계산
+        for (double num : numArray) {
+            sum += num;
+        }
+
+        // 2. 평균 계산
+        mean = sum / length;
+
+        // 3. 편차의 제곱의 합 계산
+        double sumOfSquares = 0.0;
+        for (double num : numArray) {
+            sumOfSquares += Math.pow(num - mean, 2);
+        }
+
+        // 4. 분산 계산
+        double variance = sumOfSquares / length;
+
+        // 5. 표준 편차 계산
+        double standardDeviation = Math.sqrt(variance);
+        
+		CL = standardDeviation;
+
+		Sigma = sumOfSquares;
+		
+		UCL = CL + Sigma * 3;
+		LCL = CL - Sigma * 3;
+		
+		US1 = CL + Sigma;
+		US2 = CL + Sigma * 2;
+		LS1 = CL - Sigma;
+		LS2 = CL - Sigma * 2;
+        
+		int re = 0;
+    }
 
 	public void setEvent(ArrayList<Double> aqEvent)
 	{
@@ -72,6 +212,11 @@ public class NelsonRulesProcessor
 
 	public boolean rule1()	//
 	{
+		
+		if(rule1_use_yn){
+			return false;
+		}
+		
 		if (event_count < 1)
 		{
 			return false;
@@ -89,6 +234,10 @@ public class NelsonRulesProcessor
 
 	public boolean rule2()	//
 	{
+		if(rule2_use_yn){
+			return false;
+		}
+		
 		if (event_count < rule2_length)
 		{
 			return false;
@@ -127,6 +276,10 @@ public class NelsonRulesProcessor
 
 	public boolean rule3()
 	{
+		if(rule3_use_yn){
+			return false;
+		}
+		
 		if (event_count < rule3_length)
 		{
 			return false;
@@ -170,6 +323,10 @@ public class NelsonRulesProcessor
 
 	public boolean rule4()
 	{
+		if(rule4_use_yn){
+			return false;
+		}
+		
 		if (event_count < rule4_length)
 		{
 			return false;
@@ -214,6 +371,10 @@ public class NelsonRulesProcessor
 
 	public boolean rule5()	//
 	{
+		if(rule5_use_yn){
+			return false;
+		}
+		
 		if (event_count < rule5_limit)
 		{
 			return false;
@@ -269,6 +430,10 @@ public class NelsonRulesProcessor
 
 	public boolean rule6()	//
 	{
+		if(rule6_use_yn){
+			return false;
+		}
+		
 		if (event_count < rule6_limit)
 		{
 			return false;
@@ -324,6 +489,10 @@ public class NelsonRulesProcessor
 
 	public boolean rule7()
 	{
+		if(rule7_use_yn){
+			return false;
+		}
+		
 		if (event_count < rule7_length)
 		{
 			return false;
@@ -344,6 +513,10 @@ public class NelsonRulesProcessor
 
 	public boolean rule8()
 	{
+		if(rule8_use_yn){
+			return false;
+		}
+		
 		if (event_count < rule8_length)
 		{
 			return false;

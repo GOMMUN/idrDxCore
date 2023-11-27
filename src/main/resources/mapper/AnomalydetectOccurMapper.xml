@@ -31,7 +31,10 @@
         	OCCUR_TARGET, 
         	OCCUR_REASON, 
         	OCCUR_REASONDESCRIPTION, 
-        	TID
+        	TID,
+        	EA1,
+        	EA2,
+        	VALUE
         ) VALUES(
         	#{factoryid}
         	, #{occurid}
@@ -41,6 +44,9 @@
             , #{occurReason}
             , #{occurReasondescRiption}
             , #{tid}
+            , #{ea1}
+        	, #{ea2}
+        	, #{value}
         )
     </insert>
     

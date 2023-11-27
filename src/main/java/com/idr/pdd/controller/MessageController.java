@@ -96,6 +96,10 @@ public class MessageController {
 				anomalydetect.setMessengerReasondescription("생산계획 대비 생산량 부족");
 				anomalydetect.setMessengerState("NOTICE");
 				
+				anomalydetect.setEa1(planQty);
+				anomalydetect.setEa2(prodQty);
+				anomalydetect.setValue(percent);
+				
 				if(service.count(anomalydetect) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");
 				}else {
@@ -198,6 +202,10 @@ public class MessageController {
 				anomalydetect.setMessengerReason("DEFECT-RATE");
 				anomalydetect.setMessengerReasondescription("불량율 알림");
 				anomalydetect.setMessengerState("NOTICE");
+				
+				anomalydetect.setEa1(prodQty);
+				anomalydetect.setEa2(failQty);
+				anomalydetect.setValue(percent);
 				
 				if(service.count(anomalydetect) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");

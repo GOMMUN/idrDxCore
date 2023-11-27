@@ -72,15 +72,15 @@ public class AlarmService {
 
 	@Autowired
 	KeyWordAlaramMapper keywordalarammapper;
-
+	
 	public boolean plantCheck(String plant) {
 		if ("KEM".equals(plant)) {
 			return true;
 		} else {
-			return false;
+			return false; 
 		}
 	}
-
+	
 	// 협력사 한테 알람 보내기
 	// 작업내용 용 발생
 	public void occur(WorkDailyReportDTO parent, String tid) throws Exception {
@@ -103,10 +103,6 @@ public class AlarmService {
 			percent = (int) ((double) prodQty / (double) planQty * 100);
 		}
 
-		/** TODO
-		 * START
-		 * 넬슨 룰 체크로 생산량 적용으로 변경
-		 */
 		// 설정값
 		int value = alarmSettingMapper.find(UNDER_PRODUCTION);
 
@@ -114,7 +110,7 @@ public class AlarmService {
 		if (value > percent) {
 
 			String plant = parent.getFactoryid();
-		String plantName = factoryMapper.findName(plant);
+			String plantName = factoryMapper.findName(plant);
 
 			String material = parent.getMaterialid();
 			String materialName = materialMapper.findName(material);
@@ -139,11 +135,12 @@ public class AlarmService {
 			} else {
 				SendBlockit.BlockitMesaageSend(botId, botToken, message);
 
-				// 이상감지 알람 테이블에 INSERT
-				Anomalydetect anomalydetect = new Anomalydetect();
-
 				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
-						.occurReason(UNDER_PRODUCTION).occurReasondescRiption("생산계획 대비 생산량 부족").build();
+						.occurReason(UNDER_PRODUCTION).occurReasondescRiption("생산계획 대비 생산량 부족")
+						.ea1(planQty)
+						.ea2(prodQty)
+						.value(percent)
+						.build();
 
 				if (occurMapper.count(dto) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");
@@ -152,21 +149,12 @@ public class AlarmService {
 				}
 			}
 		}
-		
-		/** TODO
-		 * END
-		 * 넬슨 룰 체크로 생산량 적용으로 변경
-		 */
 
 		////////////////////////////////////////////////////////
 		/////////////////////// 불량률 알람 ////////////////////////
 		///////////////////////////////////////////////////////
 		int firsttimeFailQty = workContentsMapper.sumFirsttimeFailQty(dataSeq);
 
-		/** TODO
-		 * START
-		 * 넬슨 룰 체크로 불량률 적용으로 변경
-		 */
 		// 설정값
 		int value2 = alarmSettingMapper.find(DEFECT_RATE);
 
@@ -210,7 +198,11 @@ public class AlarmService {
 
 				// 이상감지 알람 테이블에 INSERT
 				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(messageTid).tid(tid)
-						.occurReason(DEFECT_RATE).occurReasondescRiption("불량율 알림").build();
+						.occurReason(DEFECT_RATE).occurReasondescRiption("불량율 알림")
+						.ea1(prodQty)
+						.ea2(firsttimeFailQty)
+						.value(percent2)
+						.build();
 
 				if (occurMapper.count(dto) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");
@@ -220,10 +212,6 @@ public class AlarmService {
 
 			}
 		}
-		/** TODO
-		 * END
-		 * 넬슨 룰 체크로 불량률 적용으로 변경
-		 */
 	}
 
 	// 비가동 내역 알람
@@ -232,6 +220,8 @@ public class AlarmService {
 
 		int dataSeq = parent.getDataseq();
 		int planQty = parent.getPlanQty();
+		
+		//List<NotoperateContents> NotoperateContentsDTOList = 
 
 		String plant = parent.getFactoryid();
 		String plantName = factoryMapper.findName(plant);
@@ -334,7 +324,11 @@ public class AlarmService {
 
 				// 이상감지 알람 테이블에 INSERT
 				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(messageTid).tid(tid)
-						.noticeReason(UNDER_PRODUCTION).noticeReasondescRiption("생산계획 대비 생산량 부족").build();
+						.noticeReason(UNDER_PRODUCTION).noticeReasondescRiption("생산계획 대비 생산량 부족")
+						.ea1(planQty)
+						.ea2(prodQty)
+						.value(percent)
+						.build();
 
 				if (noticeMapper.count(dto) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");
@@ -391,7 +385,11 @@ public class AlarmService {
 
 				// 이상감지 알람 테이블에 INSERT
 				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(messageTid).tid(tid)
-						.noticeReason(DEFECT_RATE).noticeReasondescRiption("불량율 알림").build();
+						.noticeReason(DEFECT_RATE).noticeReasondescRiption("불량율 알림")
+						.ea1(prodQty)
+						.ea2(firsttimeFailQty)
+						.value(percent2)
+						.build();
 
 				if (noticeMapper.count(dto) > 0) {
 					throw new MessageSendException("동일한 알람 내역 존재");

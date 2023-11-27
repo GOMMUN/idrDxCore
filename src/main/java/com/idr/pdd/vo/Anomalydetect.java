@@ -24,5 +24,9 @@ public class Anomalydetect {
 	@Schema(name = "messengerReasondescription", description = "messengerReasondescription", example = "생산계획 대비 생산량 부족")
 	private String messengerReasondescription;
 	
+	private int ea1;
+	private int ea2;
+	private int value;
+	
 
 }
