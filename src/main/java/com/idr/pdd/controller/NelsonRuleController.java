@@ -34,7 +34,6 @@ public class NelsonRuleController {
 	
 	@ResponseBody
 	@GetMapping("/find")
-	@Operation(summary = "등록", description = "이상감지를 신규 등록합니다.")
 	public ResponseEntity<Message> find(String workDate, String factoryid, String lineid, String materialid) {
 
 		Message message = new Message();
@@ -46,7 +45,6 @@ public class NelsonRuleController {
 			
 			params.put("workDate", workDate);
 			params.put("factoryid", factoryid);
-			params.put("lineid", lineid);
 			params.put("materialid", materialid);
 			
 			// 넬슨 룰 조회

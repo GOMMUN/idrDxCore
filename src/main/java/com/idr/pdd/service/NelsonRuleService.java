@@ -78,11 +78,13 @@ public class NelsonRuleService {
 		List<Double> utcltc1 = NelsonRulesProcessor.getUtcLtc(numArray1);
 		double UTC1 = utcltc1.get(0);
 		double LTC1  = utcltc1.get(1);
+		double AVG1  = utcltc1.get(2);
 		
 		// 불량률 각월 1일~말일 
 		List<Double> utcltc2 = NelsonRulesProcessor.getUtcLtc(numArray2);
 		double UTC2 = utcltc2.get(0);
 		double LTC2  = utcltc2.get(1);
+		double AVG2  = utcltc2.get(2);
 		
 		NelsonRulesProcessor underProductionRule = new NelsonRulesProcessor(
 																UTC1, LTC1, 
@@ -206,8 +208,10 @@ public class NelsonRuleService {
 		NelsonResultDTO result = NelsonResultDTO.builder()
 									.prodUtc(UTC1)
 									.prodLtc(LTC1)
+									.prodAvg(AVG1)
 									.failUtc(UTC2)
 									.failLtc(LTC2)
+									.failAvg(AVG2)
 									.prodResult(prodResult)
 									.failResult(failResult)
 									.dateList(dateList)

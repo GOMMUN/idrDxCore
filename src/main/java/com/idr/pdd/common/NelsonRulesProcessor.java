@@ -120,6 +120,7 @@ public class NelsonRulesProcessor
         // 3시그마 범위 계산
         result.add(mean + (3 * sd));
         result.add(mean - (3 * sd));
+        result.add(mean);
         
         return result;
 	}

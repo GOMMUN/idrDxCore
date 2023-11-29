@@ -14,8 +14,10 @@ public class NelsonResultDTO {
 
 	private double prodUtc;
 	private double prodLtc;
+	private double prodAvg;
 	private double failUtc;
 	private double failLtc;
+	private double failAvg;
 	
 	List<Map<String, String>> dateList;
 	List<Double> prodAvgList;

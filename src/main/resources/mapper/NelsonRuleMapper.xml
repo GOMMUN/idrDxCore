@@ -14,7 +14,6 @@
 			WHERE 1=1
 			AND WORK_DATE BETWEEN #{workDate}+'01' AND #{workDate}+'31'
 			AND FACTORYID = #{factoryid}
-			AND LINEID = #{lineid}
 			AND MATERIALID = #{materialid}
 			GROUP BY WORK_DATE
 		)B ON A.dt = B.WORK_DATE
@@ -33,7 +32,6 @@
 			WHERE 1=1
 			AND A.WORK_DATE BETWEEN #{workDate}+'01' AND #{workDate}+'31'
 			AND A.FACTORYID = #{factoryid}
-			AND A.LINEID = #{lineid}
 			AND A.MATERIALID = #{materialid}
 			GROUP BY A.WORK_DATE
 		)BB ON AA.dt = BB.WORK_DATE
@@ -52,7 +50,6 @@
 			WHERE 1=1
 			AND A.WORK_DATE BETWEEN #{workDate}+'01' AND #{workDate}+'31'
 			AND A.FACTORYID = #{factoryid}
-			AND A.LINEID = #{lineid}
 			AND A.MATERIALID = #{materialid}
 			GROUP BY A.WORK_DATE
 		)BB ON AA.dt = BB.WORK_DATE
