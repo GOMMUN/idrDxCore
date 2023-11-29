@@ -130,6 +130,7 @@ public class NelsonRuleService {
 		
 		String prodResult = "";
 		
+		underProductionRule.setEvent(numArray1);
 		if(underProductionRule.rule1()) {
 			prodResult = "RULE1, ";
 		}
@@ -168,6 +169,7 @@ public class NelsonRuleService {
 		
 		String failResult = "";
 		
+		defectRateRule.setEvent(numArray2);
 		if(defectRateRule.rule1()) {
 			failResult = "RULE1, ";
 		}

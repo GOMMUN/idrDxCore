@@ -24,7 +24,7 @@ public class NelsonRulesProcessor
 	private boolean rule7_use_yn = false;
 	private boolean rule8_use_yn = false;
 
-	private ArrayList<Double> aqEvent = null;
+	private List<Double> aqEvent = null;
 	private int event_count = 0;
 
 	public int rule2_length = 7;	//	>= 7
@@ -205,16 +205,16 @@ public class NelsonRulesProcessor
 		int re = 0;
     }
 
-	public void setEvent(ArrayList<Double> aqEvent)
+	public void setEvent(List<Double> numArray1)
 	{
-		this.aqEvent = aqEvent;
-		event_count = aqEvent.size();
+		this.aqEvent = numArray1;
+		event_count = numArray1.size();
 	}
 
 	public boolean rule1()	//
 	{
 		
-		if(rule1_use_yn){
+		if(!rule1_use_yn){
 			return false;
 		}
 		
@@ -223,11 +223,13 @@ public class NelsonRulesProcessor
 			return false;
 		}
 
-		double value = aqEvent.get(event_count - 1);
+//		double value = aqEvent.get(event_count - 1);
 
-		if (value > UCL || value < LCL)
-		{
-			return true;
+		for (double value : aqEvent) {
+			if (value > UCL || value < LCL)
+			{
+				return true;
+			}
 		}
 
 		return false;
@@ -235,7 +237,7 @@ public class NelsonRulesProcessor
 
 	public boolean rule2()	//
 	{
-		if(rule2_use_yn){
+		if(!rule2_use_yn){
 			return false;
 		}
 		
@@ -245,14 +247,14 @@ public class NelsonRulesProcessor
 		}
 
 		double value = aqEvent.get(event_count - rule2_length);
-
+		
 		if (value == CL)
 		{
 			return false;
 		}
-
+		
 		boolean isUpper = (value > CL) ? true: false;
-
+		
 		for (int index = event_count - (rule2_length - 1); index < event_count; ++index)
 		{
 			value = aqEvent.get(index);
@@ -277,7 +279,7 @@ public class NelsonRulesProcessor
 
 	public boolean rule3()
 	{
-		if(rule3_use_yn){
+		if(!rule3_use_yn){
 			return false;
 		}
 		
@@ -324,7 +326,7 @@ public class NelsonRulesProcessor
 
 	public boolean rule4()
 	{
-		if(rule4_use_yn){
+		if(!rule4_use_yn){
 			return false;
 		}
 		
@@ -372,7 +374,7 @@ public class NelsonRulesProcessor
 
 	public boolean rule5()	//
 	{
-		if(rule5_use_yn){
+		if(!rule5_use_yn){
 			return false;
 		}
 		
@@ -431,7 +433,7 @@ public class NelsonRulesProcessor
 
 	public boolean rule6()	//
 	{
-		if(rule6_use_yn){
+		if(!rule6_use_yn){
 			return false;
 		}
 		
@@ -490,7 +492,7 @@ public class NelsonRulesProcessor
 
 	public boolean rule7()
 	{
-		if(rule7_use_yn){
+		if(!rule7_use_yn){
 			return false;
 		}
 		
@@ -514,7 +516,7 @@ public class NelsonRulesProcessor
 
 	public boolean rule8()
 	{
-		if(rule8_use_yn){
+		if(!rule8_use_yn){
 			return false;
 		}
 		
