@@ -222,53 +222,58 @@ public class AlarmService {
 		int planQty = parent.getPlanQty();
 		
 		//List<NotoperateContents> NotoperateContentsDTOList = 
+		
+		// 설정값
+		int value = alarmSettingMapper.find(NOTOPERATE_PRESS);
+		
+		// 비가동 알람 활성화
+		if(value == 1) {
+			String plant = parent.getFactoryid();
+			String plantName = factoryMapper.findName(plant);
 
-		String plant = parent.getFactoryid();
-		String plantName = factoryMapper.findName(plant);
+			String line = parent.getLineid();
+			String lineName = lineMapper.findName(line);
 
-		String line = parent.getLineid();
-		String lineName = lineMapper.findName(line);
+			String getdate = parent.getWorkDate().substring(4, 6) + '-' + parent.getWorkDate().substring(6) + " "
+					+ param.getFromtime().substring(0, 2) + ':' + param.getFromtime().substring(2, 4) + ':'
+					+ param.getFromtime().substring(4);
 
-		String getdate = parent.getWorkDate().substring(4, 6) + '-' + parent.getWorkDate().substring(6) + " "
-				+ param.getFromtime().substring(0, 2) + ':' + param.getFromtime().substring(2, 4) + ':'
-				+ param.getFromtime().substring(4);
+			String tid = param.getTid();
 
-		String tid = param.getTid();
+			// blockkit message
+			String blockKit = blockKitMapper.find(NOTOPERATE_PRESS);
+			String btnString = "통보";
+			String messageTid = Tid.generate();
+			String btnUrl = BlockKitDataParshing.setNotOperatepressOccurUrl(plant, line, getdate, tid, messageTid);
+			String message = null;
+			try {
+				message = BlockKitDataParshing.notoperatePress(blockKit, btnString, btnUrl, plantName, lineName, getdate);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-		// blockkit message
-		String blockKit = blockKitMapper.find(NOTOPERATE_PRESS);
-		String btnString = "통보";
-		String messageTid = Tid.generate();
-		String btnUrl = BlockKitDataParshing.setNotOperatepressOccurUrl(plant, line, getdate, tid, messageTid);
-		String message = null;
-		try {
-			message = BlockKitDataParshing.notoperatePress(blockKit, btnString, btnUrl, plantName, lineName, getdate);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+			String botId = BotId.NOTOPERATE_PRESS_VENDOR.getBot();
+//				String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
+			String botToken = SendBlockit.BlockitToken(botId);
 
-		String botId = BotId.NOTOPERATE_PRESS_VENDOR.getBot();
-//			String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
-		String botToken = SendBlockit.BlockitToken(botId);
-
-		if (botToken == null) {
-			throw new MessageSendException();
-		} else {
-			SendBlockit.BlockitMesaageSend(botId, botToken, message);
-
-			// 이상감지 알람 테이블에 INSERT
-			Anomalydetect anomalydetect = new Anomalydetect();
-
-			AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(messageTid).tid(tid)
-					.occurReason(NOTOPERATE_PRESS).occurReasondescRiption("프레스 설비 작동 이상").build();
-
-			if (occurMapper.count(dto) > 0) {
-				throw new MessageSendException("동일한 알람 내역 존재");
+			if (botToken == null) {
+				throw new MessageSendException();
 			} else {
-				occurMapper.create(dto);
+				SendBlockit.BlockitMesaageSend(botId, botToken, message);
+
+				// 이상감지 알람 테이블에 INSERT
+				Anomalydetect anomalydetect = new Anomalydetect();
+
+				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(messageTid).tid(tid)
+						.occurReason(NOTOPERATE_PRESS).occurReasondescRiption("프레스 설비 작동 이상").build();
+
+				if (occurMapper.count(dto) > 0) {
+					throw new MessageSendException("동일한 알람 내역 존재");
+				} else {
+					occurMapper.create(dto);
+				}
 			}
 		}
-
 	}
 
 	// 대표기업한테 알람보내기
@@ -406,43 +411,49 @@ public class AlarmService {
 
 		int dataSeq = parent.getDataseq();
 		int planQty = parent.getPlanQty();
+		
+		// 설정값
+		int value = alarmSettingMapper.find(NOTOPERATE_PRESS);
+		
+		// 비가동 알람 활성화
+		if(value == 1) {
+			String plant = parent.getFactoryid();
+			String plantName = factoryMapper.findName(plant);
 
-		String plant = parent.getFactoryid();
-		String plantName = factoryMapper.findName(plant);
+			String line = parent.getLineid();
+			String lineName = lineMapper.findName(line);
 
-		String line = parent.getLineid();
-		String lineName = lineMapper.findName(line);
+			String getdate = parent.getWorkDate().substring(4, 6) + '-' + parent.getWorkDate().substring(6) + " "
+					+ param.getFromtime().substring(0, 2) + ':' + param.getFromtime().substring(2, 4) + ':'
+					+ param.getFromtime().substring(4);
 
-		String getdate = parent.getWorkDate().substring(4, 6) + '-' + parent.getWorkDate().substring(6) + " "
-				+ param.getFromtime().substring(0, 2) + ':' + param.getFromtime().substring(2, 4) + ':'
-				+ param.getFromtime().substring(4);
+			String tid = param.getTid();
 
-		String tid = param.getTid();
+			// blockkit message
+			String blockKit = blockKitMapper.find(NOTOPERATE_PRESS);
+			String btnString = "확인";
+			String messageTid = Tid.generate();
+			String btnUrl = BlockKitDataParshing.setNotOperatepressNoticeUrl(plant, line, getdate, tid, messageTid);
+			String message = BlockKitDataParshing.notoperatePress(blockKit, btnString, btnUrl, plantName, lineName,
+					getdate);
 
-		// blockkit message
-		String blockKit = blockKitMapper.find(NOTOPERATE_PRESS);
-		String btnString = "확인";
-		String messageTid = Tid.generate();
-		String btnUrl = BlockKitDataParshing.setNotOperatepressNoticeUrl(plant, line, getdate, tid, messageTid);
-		String message = BlockKitDataParshing.notoperatePress(blockKit, btnString, btnUrl, plantName, lineName,
-				getdate);
+			String botId = BotId.NOTOPERATE_PRESS_MAIN.getBot();
+//				String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
+			String botToken = SendBlockit.BlockitToken(botId);
 
-		String botId = BotId.NOTOPERATE_PRESS_MAIN.getBot();
-//			String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
-		String botToken = SendBlockit.BlockitToken(botId);
-
-		if (botToken == null) {
-			throw new MessageSendException();
-		} else {
-			SendBlockit.BlockitMesaageSend(botId, botToken, message);
-
-			AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(messageTid).tid(tid)
-					.noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동 이상").build();
-
-			if (noticeMapper.count(dto) > 0) {
-				throw new MessageSendException("동일한 알람 내역 존재");
+			if (botToken == null) {
+				throw new MessageSendException();
 			} else {
-				noticeMapper.create(dto);
+				SendBlockit.BlockitMesaageSend(botId, botToken, message);
+
+				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(messageTid).tid(tid)
+						.noticeReason(NOTOPERATE_PRESS).noticeReasondescRiption("프레스 설비 작동 이상").build();
+
+				if (noticeMapper.count(dto) > 0) {
+					throw new MessageSendException("동일한 알람 내역 존재");
+				} else {
+					noticeMapper.create(dto);
+				}
 			}
 		}
 	}

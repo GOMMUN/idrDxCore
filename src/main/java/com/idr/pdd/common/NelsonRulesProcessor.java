@@ -27,13 +27,13 @@ public class NelsonRulesProcessor
 	private List<Double> aqEvent = null;
 	private int event_count = 0;
 
-	public int rule2_length = 7;	//	>= 7
-	public int rule3_length = 5;	//	>= 5
-	public int rule4_length = 10;	//	>= 10
+	public int rule2_length = 9;	//	>= 7
+	public int rule3_length = 6;	//	>= 5
+	public int rule4_length = 14;	//	>= 10
 	public int rule5_length = 3;	//	>= 3
 	public int rule5_limit = 2;	//	>= 2
-	public int rule6_length = 4;	//	>= 4
-	public int rule6_limit = 3;	//	>= 3
+	public int rule6_length = 5;	//	>= 4
+	public int rule6_limit = 4;	//	>= 3
 	public int rule7_length = 11;	//	>= 11
 	public int rule8_length = 6;	//	>= 6
 
@@ -99,7 +99,7 @@ public class NelsonRulesProcessor
 		LS2 = CL - Sigma * 2;
 	}
 	
-	public static List<Double> getUtcLtc(List<Double> numArray){
+	public static List<Double> getUclLcl(List<Double> numArray){
 		
 		// 표준 편차 계산
         double sum = 0.0;

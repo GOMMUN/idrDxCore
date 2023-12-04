@@ -75,19 +75,19 @@ public class NelsonRuleService {
 		}
 		
 		// 생산률 각월 1일~말일 
-		List<Double> utcltc1 = NelsonRulesProcessor.getUtcLtc(numArray1);
-		double UTC1 = utcltc1.get(0);
-		double LTC1  = utcltc1.get(1);
-		double AVG1  = utcltc1.get(2);
+		List<Double> ucllcl1 = NelsonRulesProcessor.getUclLcl(numArray1);
+		double UCL1 = ucllcl1.get(0);
+		double LCL1  = ucllcl1.get(1);
+		double AVG1  = ucllcl1.get(2);
 		
 		// 불량률 각월 1일~말일 
-		List<Double> utcltc2 = NelsonRulesProcessor.getUtcLtc(numArray2);
-		double UTC2 = utcltc2.get(0);
-		double LTC2  = utcltc2.get(1);
-		double AVG2  = utcltc2.get(2);
+		List<Double> ucllcl2 = NelsonRulesProcessor.getUclLcl(numArray2);
+		double UCL2 = ucllcl2.get(0);
+		double LCL2  = ucllcl2.get(1);
+		double AVG2  = ucllcl2.get(2);
 		
 		NelsonRulesProcessor underProductionRule = new NelsonRulesProcessor(
-																UTC1, LTC1, 
+																UCL1, LCL1, 
 																underProductionSetting.get(1).getLength(), 
 																underProductionSetting.get(2).getLength(), 
 																underProductionSetting.get(3).getLength(), 
@@ -108,7 +108,7 @@ public class NelsonRuleService {
 													);
 		
 		NelsonRulesProcessor defectRateRule = new NelsonRulesProcessor(
-																UTC2, LTC2, 
+																UCL2, LCL2, 
 																defectRateSetting.get(1).getLength(), 
 																defectRateSetting.get(2).getLength(), 
 																defectRateSetting.get(3).getLength(), 
@@ -206,13 +206,12 @@ public class NelsonRuleService {
 			failResult = StringUtils.removeEnd(failResult, ", ");
 		}
 		
-		
 		NelsonResultDTO result = NelsonResultDTO.builder()
-									.prodUtc(UTC1)
-									.prodLtc(LTC1)
+									.prodUcl(UCL1)
+									.prodLcl(LCL1)
 									.prodAvg(AVG1)
-									.failUtc(UTC2)
-									.failLtc(LTC2)
+									.failUcl(UCL2)
+									.failLcl(LCL2)
 									.failAvg(AVG2)
 									.prodResult(prodResult)
 									.failResult(failResult)

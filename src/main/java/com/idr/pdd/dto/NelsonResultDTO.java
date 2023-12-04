@@ -12,11 +12,11 @@ import lombok.Getter;
 @Builder
 public class NelsonResultDTO {
 
-	private double prodUtc;
-	private double prodLtc;
+	private double prodUcl;
+	private double prodLcl;
 	private double prodAvg;
-	private double failUtc;
-	private double failLtc;
+	private double failUcl;
+	private double failLcl;
 	private double failAvg;
 	
 	List<Map<String, String>> dateList;

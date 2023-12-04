@@ -45,6 +45,7 @@ public class NelsonRuleController {
 			
 			params.put("workDate", workDate);
 			params.put("factoryid", factoryid);
+			params.put("lineid", lineid);
 			params.put("materialid", materialid);
 			
 			// 넬슨 룰 조회
