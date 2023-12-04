@@ -132,35 +132,35 @@ public class NelsonRuleService {
 		
 		underProductionRule.setEvent(numArray1);
 		if(underProductionRule.rule1()) {
-			prodResult = "RULE1, ";
+			prodResult += "RULE1, ";
 		}
 		
 		if(underProductionRule.rule2()) {
-			prodResult = "RULE2, ";
+			prodResult += "RULE2, ";
 		}
 		
 		if(underProductionRule.rule3()) {
-			prodResult = "RULE3, ";
+			prodResult += "RULE3, ";
 		}
 		
 		if(underProductionRule.rule4()) {
-			prodResult = "RULE4, ";
+			prodResult += "RULE4, ";
 		}
 		
 		if(underProductionRule.rule5()) {
-			prodResult = "RULE5, ";
+			prodResult += "RULE5, ";
 		}
 		
 		if(underProductionRule.rule6()) {
-			prodResult = "RULE6, ";
+			prodResult += "RULE6, ";
 		}
 		
 		if(underProductionRule.rule7()) {
-			prodResult = "RULE7, ";
+			prodResult += "RULE7, ";
 		}
 		
 		if(underProductionRule.rule8()) {
-			prodResult = "RULE8, ";
+			prodResult += "RULE8, ";
 		}
 		
 		if(!"".equals(prodResult)) {
@@ -171,35 +171,35 @@ public class NelsonRuleService {
 		
 		defectRateRule.setEvent(numArray2);
 		if(defectRateRule.rule1()) {
-			failResult = "RULE1, ";
+			failResult += "RULE1, ";
 		}
 		
 		if(defectRateRule.rule2()) {
-			failResult = "RULE2, ";
+			failResult += "RULE2, ";
 		}
 		
 		if(defectRateRule.rule3()) {
-			failResult = "RULE3, ";
+			failResult += "RULE3, ";
 		}
 		
 		if(defectRateRule.rule4()) {
-			failResult = "RULE4, ";
+			failResult += "RULE4, ";
 		}
 		
 		if(defectRateRule.rule5()) {
-			failResult = "RULE5, ";
+			failResult += "RULE5, ";
 		}
 		
 		if(defectRateRule.rule6()) {
-			failResult = "RULE6, ";
+			failResult += "RULE6, ";
 		}
 		
 		if(defectRateRule.rule7()) {
-			failResult = "RULE7, ";
+			failResult += "RULE7, ";
 		}
 		
 		if(defectRateRule.rule8()) {
-			failResult = "RULE8, ";
+			failResult += "RULE8, ";
 		}
 		
 		if(!"".equals(failResult)) {
