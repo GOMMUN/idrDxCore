@@ -21,7 +21,7 @@
     </select>
     
     <select id="sumProdQtyBySeq" parameterType="Integer" resultType="Integer">
-        SELECT SUM(PROD_QTY) 
+        SELECT SUM(FIRSTTIME_GOOD_QTY+FIRSTTIME_FAIL_QTY) 
 		FROM DSP_WORK_CONTENTS
 		WHERE WORKDAILY_SEQ = #{dataSeq}
 		AND ISUSABLE = 'Usable'
