@@ -92,15 +92,16 @@ public class AlarmService {
 		//////////////////// 생산대비 생산률 알람 //////////////////////
 		////////////////////////////////////////////////////////
 		// 생산량 총 합산
-		int prodQty = workContentsMapper.sumProdQtyBySeq(dataSeq);
-
+//		int prodQty = workContentsMapper.sumProdQtyBySeq(dataSeq);
+		int firsttimeGoodQty = workContentsMapper.sumProdQtyBySeq(dataSeq);
+		
 		// 백분율
 		int percent = 0;
 
-		if (planQty == 0 || prodQty == 0) {
+		if (planQty == 0 || firsttimeGoodQty == 0) {
 			percent = 0;
 		} else {
-			percent = (int) ((double) prodQty / (double) planQty * 100);
+			percent = (int) ((double) firsttimeGoodQty / (double) planQty * 100);
 		}
 
 		// 설정값
@@ -120,11 +121,11 @@ public class AlarmService {
 			String btnString = "통보";
 			
 			String messageTid = Tid.generate();
-			String btnUrl = BlockKitDataParshing.setUnderProductionOccurUrl(plant, material, tid, messageTid, planQty, prodQty,
+			String btnUrl = BlockKitDataParshing.setUnderProductionOccurUrl(plant, material, tid, messageTid, planQty, firsttimeGoodQty,
 					percent);
 
 			String message = BlockKitDataParshing.underProduction(blockKit, btnString, btnUrl, plantName, materialName,
-					planQty, prodQty, percent);
+					planQty, firsttimeGoodQty, percent);
 
 			String botId = BotId.UNDER_PRODUCTION_VENDOR.getBot();
 //				String botId = BotId.UNDER_PRODUCTION_VENDOR.name();
@@ -138,7 +139,7 @@ public class AlarmService {
 				AnomalydetectOccurDTO dto = AnomalydetectOccurDTO.builder().factoryid(plant).occurid(tid).tid(tid)
 						.occurReason(UNDER_PRODUCTION).occurReasondescRiption("생산계획 대비 생산량 부족")
 						.ea1(planQty)
-						.ea2(prodQty)
+						.ea2(firsttimeGoodQty)
 						.value(percent)
 						.build();
 
@@ -154,7 +155,9 @@ public class AlarmService {
 		/////////////////////// 불량률 알람 ////////////////////////
 		///////////////////////////////////////////////////////
 		int firsttimeFailQty = workContentsMapper.sumFirsttimeFailQty(dataSeq);
-
+		
+		int prodQty = firsttimeGoodQty + firsttimeFailQty;
+		
 		// 설정값
 		int value2 = alarmSettingMapper.find(DEFECT_RATE);
 
@@ -286,15 +289,16 @@ public class AlarmService {
 		//////////////////// 생산대비 생산률 알람 //////////////////////
 		////////////////////////////////////////////////////////
 		// 생산량 총 합산
-		int prodQty = workContentsMapper.sumProdQtyBySeq(dataSeq);
+//		int prodQty = workContentsMapper.sumProdQtyBySeq(dataSeq);
+		int firsttimeGoodQty = workContentsMapper.sumProdQtyBySeq(dataSeq);
 
 		// 백분율
 		int percent = 0;
 
-		if (planQty == 0 || prodQty == 0) {
+		if (planQty == 0 || firsttimeGoodQty == 0) {
 			percent = 0;
 		} else {
-			percent = (int) ((double) prodQty / (double) planQty * 100);
+			percent = (int) ((double) firsttimeGoodQty / (double) planQty * 100);
 		}
 
 		// 설정값
@@ -312,12 +316,12 @@ public class AlarmService {
 			String blockKit = blockKitMapper.find(UNDER_PRODUCTION);
 			String btnString = "확인";
 			String messageTid = Tid.generate();
-			String btnUrl = BlockKitDataParshing.setUnderProductionNoticeUrl(plant, material, tid, messageTid, planQty, prodQty,
+			String btnUrl = BlockKitDataParshing.setUnderProductionNoticeUrl(plant, material, tid, messageTid, planQty, firsttimeGoodQty,
 					percent);
 			// String btnUrl = "https://www.daum.net/";
 
 			String message = BlockKitDataParshing.underProduction(blockKit, btnString, btnUrl, plantName, materialName,
-					planQty, prodQty, percent);
+					planQty, firsttimeGoodQty, percent);
 
 			String botId = BotId.UNDER_PRODUCTION_MAIN.getBot();
 			String botToken = SendBlockit.BlockitToken(botId);
@@ -331,7 +335,7 @@ public class AlarmService {
 				AnomalydetectNoticeDTO dto = AnomalydetectNoticeDTO.builder().factoryid(plant).noticeid(messageTid).tid(tid)
 						.noticeReason(UNDER_PRODUCTION).noticeReasondescRiption("생산계획 대비 생산량 부족")
 						.ea1(planQty)
-						.ea2(prodQty)
+						.ea2(firsttimeGoodQty)
 						.value(percent)
 						.build();
 
@@ -347,6 +351,7 @@ public class AlarmService {
 		/////////////////////// 불량률 알람 ////////////////////////
 		///////////////////////////////////////////////////////
 		int firsttimeFailQty = workContentsMapper.sumFirsttimeFailQty(dataSeq);
+		int prodQty = firsttimeGoodQty + firsttimeFailQty;
 
 		// 설정값
 		int value2 = alarmSettingMapper.find(DEFECT_RATE);
