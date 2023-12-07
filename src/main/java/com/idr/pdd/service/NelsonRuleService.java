@@ -44,11 +44,11 @@ public class NelsonRuleService {
 		for (int i = 0; i < planSumList.size(); i++) {
 			
 			double planSum = planSumList.get(i).getSum();
-			double prodSum = prodSumList.get(i).getSum();
+			double goodSum = prodSumList.get(i).getSum();
 			
 			double prodAvg = 0.0;
 			if(planSum != 0.0) {
-				prodAvg = ( prodSum / planSum ) * 100;
+				prodAvg = ( goodSum / planSum ) * 100;
 			}
 			numArray1.add(prodAvg);
 			
@@ -64,7 +64,7 @@ public class NelsonRuleService {
 		List<Double> numArray2 = new ArrayList<>(); 
 		for (int i = 0; i < prodSumList.size(); i++) {
 			
-			double prodSum = prodSumList.get(i).getSum();
+			double prodSum = prodSumList.get(i).getSum() + failSumList.get(i).getSum();
 			double failSum = failSumList.get(i).getSum();
 			
 			double failAvg = 0.0;
