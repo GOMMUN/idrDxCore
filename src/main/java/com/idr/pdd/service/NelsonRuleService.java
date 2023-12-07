@@ -42,13 +42,15 @@ public class NelsonRuleService {
 		// 작업일보에서 조회된 생산률 리스트
 		List<Double> numArray1 = new ArrayList<>(); 
 		for (int i = 0; i < planSumList.size(); i++) {
-			
-			double planSum = planSumList.get(i).getSum();
-			double goodSum = prodSumList.get(i).getSum();
+//			double planSum = planSumList.get(i).getSum();
+			double planSum = Math.round(planSumList.get(i).getSum() * 100.0) / 100.0;
+//			double goodSum = prodSumList.get(i).getSum();
+			double goodSum = Math.round(prodSumList.get(i).getSum() * 100.0) / 100.0;
 			
 			double prodAvg = 0.0;
 			if(planSum != 0.0) {
-				prodAvg = ( goodSum / planSum ) * 100;
+//				prodAvg = ( goodSum / planSum ) * 100;
+				prodAvg = Math.round(( goodSum / planSum ) * 100 * 100.0) / 100.0;
 			}
 			numArray1.add(prodAvg);
 			
@@ -64,12 +66,15 @@ public class NelsonRuleService {
 		List<Double> numArray2 = new ArrayList<>(); 
 		for (int i = 0; i < prodSumList.size(); i++) {
 			
-			double prodSum = prodSumList.get(i).getSum() + failSumList.get(i).getSum();
-			double failSum = failSumList.get(i).getSum();
+//			double prodSum = prodSumList.get(i).getSum() + failSumList.get(i).getSum();
+			double prodSum = Math.round(prodSumList.get(i).getSum() + failSumList.get(i).getSum() * 100.0) / 100.0;
+//			double failSum = failSumList.get(i).getSum();
+			double failSum = Math.round(failSumList.get(i).getSum() * 100.0) / 100.0;
 			
 			double failAvg = 0.0;
 			if(prodSum != 0.0) {
-				failAvg = ( failSum / prodSum ) * 100;
+//				failAvg = ( failSum / prodSum ) * 100;
+				failAvg = Math.round(( failSum / prodSum ) * 100 * 100.0) / 100.0;
 			}
 			numArray2.add(failAvg);
 		}
